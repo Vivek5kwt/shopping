@@ -5,6 +5,7 @@ import 'package:shop/custom_bottom_navbar.dart';
 import 'package:shop/features/admin/features/widgets/amdin_panel_wrapper.dart';
 import 'package:shop/features/auth/controller/auth/auth_provider.dart';
 import 'package:shop/features/auth/view/login_screen.dart';
+import 'package:shop/features/auth/view/onboarding_screen.dart';
 import 'package:shop/utils/enums/auth_enums.dart';
 import 'package:shop/utils/loaders/full_sreen_loader.dart';
 import 'package:shop/utils/image/images.dart';
@@ -75,7 +76,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
                 : const MainWrapper();
 
           case AuthStatus.unauthenticated:
-            return const LoginScreen();
+            return const OnboardingScreen();
 
           case AuthStatus.loading:
             return const Scaffold(
