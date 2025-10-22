@@ -9,6 +9,7 @@ class StorageService {
   static const String _tokenKey = 'jwt_token';
   static const String _userKey = 'user_data';
   static const String _userId = "user_id";
+  static const String _onboardingCompleteKey = 'onboarding_complete';
 
   static Future<void> init() async {
     // Add any initialization logic here if needed
@@ -71,5 +72,16 @@ class StorageService {
   static Future<void> clearAll() async {
     await removeToken();
     await removeUser();
+  }
+
+  // Onboarding helpers
+  static Future<bool> isOnboardingComplete() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_onboardingCompleteKey) ?? false;
+  }
+
+  static Future<void> setOnboardingComplete({bool value = true}) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_onboardingCompleteKey, value);
   }
 }

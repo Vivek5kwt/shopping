@@ -6,9 +6,8 @@ import 'package:shop/features/admin/features/widgets/amdin_panel_wrapper.dart';
 import 'package:shop/features/auth/controller/auth/auth_provider.dart';
 import 'package:shop/features/auth/view/login_screen.dart';
 import 'package:shop/features/auth/view/onboarding_screen.dart';
+import 'package:shop/data/services/storage_services.dart';
 import 'package:shop/utils/enums/auth_enums.dart';
-import 'package:shop/utils/loaders/full_sreen_loader.dart';
-import 'package:shop/utils/image/images.dart';
 
 class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
@@ -19,6 +18,7 @@ class AuthWrapper extends StatefulWidget {
 
 class _AuthWrapperState extends State<AuthWrapper> {
   bool _initialized = false;
+  bool _shouldShowOnboarding = false;
 
   @override
   void initState() {
@@ -30,13 +30,27 @@ class _AuthWrapperState extends State<AuthWrapper> {
     // Simulate checking user/session data
     await Future.delayed(const Duration(seconds: 2));
 
+    final hasCompletedOnboarding =
+        await StorageService.isOnboardingComplete();
+
     // Remove splash screen after initialization completes
     if (mounted) {
       FlutterNativeSplash.remove();
       setState(() {
         _initialized = true;
+        _shouldShowOnboarding = !hasCompletedOnboarding;
       });
     }
+  }
+
+  Future<void> _handleOnboardingComplete() async {
+    await StorageService.setOnboardingComplete();
+
+    if (!mounted) return;
+
+    setState(() {
+      _shouldShowOnboarding = false;
+    });
   }
 
   @override
@@ -76,7 +90,13 @@ class _AuthWrapperState extends State<AuthWrapper> {
                 : const MainWrapper();
 
           case AuthStatus.unauthenticated:
-            return const OnboardingScreen();
+            if (_shouldShowOnboarding) {
+              return OnboardingScreen(
+                onComplete: _handleOnboardingComplete,
+              );
+            }
+
+            return const LoginScreen();
 
           case AuthStatus.loading:
             return const Scaffold(
