@@ -56,15 +56,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
   @override
   Widget build(BuildContext context) {
     if (!_initialized) {
-      // While splash is still showing
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(
-            strokeWidth: 3,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.black54),
-          ),
-        ),
-      );
+      return const AppSplashView();
     }
 
     return Consumer<AuthProvider>(
@@ -109,6 +101,60 @@ class _AuthWrapperState extends State<AuthWrapper> {
             );
         }
       },
+    );
+  }
+}
+
+/// Splash screen that mirrors the native splash artwork so that
+/// there isn't a visual jump between the native and Flutter views.
+class AppSplashView extends StatelessWidget {
+  const AppSplashView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF7C4DFF),
+      body: Stack(
+        children: [
+          // Decorative bottom bubble
+          Positioned(
+            bottom: -120,
+            right: -80,
+            child: Container(
+              height: 260,
+              width: 260,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          // Logo and title
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/images/splash_logo.png',
+                  width: 140,
+                  height: 140,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'B&W',
+                  style: TextStyle(
+                    fontSize: 46,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
