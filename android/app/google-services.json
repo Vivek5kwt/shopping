@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "706201912501",
+    "project_id": "bandw-80b62",
+    "storage_bucket": "bandw-80b62.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:706201912501:android:af0ff1eab102bd5eefeafc",
+        "android_client_info": {
+          "package_name": "com.example.shop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_FD6DSIElKotxaiuPLVG9eqekg8LcglE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
