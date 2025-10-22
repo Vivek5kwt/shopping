@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  const OnboardingScreen({super.key, this.onComplete});
+
+  final Future<void> Function()? onComplete;
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -38,18 +40,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   ];
 
   void _goToNextPage() {
-    _pageController.nextPage(
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeOut,
-    );
+    if (_currentIndex < _pages.length - 1) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeOut,
+      );
+    } else {
+      _completeOnboarding();
+    }
   }
 
-  void _completeOnboarding() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => const LoginScreen(),
-      ),
-    );
+  Future<void> _completeOnboarding() async {
+    if (widget.onComplete != null) {
+      await widget.onComplete!.call();
+    } else {
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => const LoginScreen(),
+        ),
+      );
+    }
   }
 
   @override
@@ -76,6 +87,45 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: SafeArea(
           child: Column(
             children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AnimatedOpacity(
+                      duration: const Duration(milliseconds: 300),
+                      opacity: _currentIndex > 0 ? 1 : 0,
+                      child: _currentIndex > 0
+                          ? IconButton(
+                              onPressed: () {
+                                if (_currentIndex > 0) {
+                                  _pageController.previousPage(
+                                    duration: const Duration(milliseconds: 400),
+                                    curve: Curves.easeOut,
+                                  );
+                                }
+                              },
+                              icon: const Icon(
+                                Icons.arrow_back_ios_new,
+                                color: Colors.black,
+                                size: 20,
+                              ),
+                            )
+                          : const SizedBox(width: 48),
+                    ),
+                    TextButton(
+                      onPressed: () => _completeOnboarding(),
+                      child: Text(
+                        _currentIndex == _pages.length - 1 ? 'Done' : 'Skip',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Expanded(
                 child: PageView.builder(
                   controller: _pageController,
