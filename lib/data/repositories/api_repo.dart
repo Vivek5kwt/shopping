@@ -55,16 +55,28 @@ class ApiService {
       );
     }
   }
-  static Future<ApiResponse> socialLogin(UserModel user) async {
+  static Future<ApiResponse> socialLogin({
+    required String provider,
+    required String idToken,
+    String? accessToken,
+    Map<String, dynamic>? profile,
+  }) async {
     try {
-      final encodedParams = json.encode(user.toJson());
+      final url = '${BaseApi.baseUrl}/user/social-login';
+      final payload = {
+        'provider': provider,
+        'idToken': idToken,
+        if (accessToken != null) 'accessToken': accessToken,
+        if (profile != null) 'profile': profile,
+      };
+
+      debugPrint('social login url :$url');
+
       final response = await http.post(
-        Uri.parse('${BaseApi.baseUrl}/user/login'),
+        Uri.parse(url),
         headers: BaseApi.headers,
-        body: encodedParams,
+        body: json.encode(payload),
       );
-      final url = '${BaseApi.baseUrl}/user/login';
-      debugPrint("login url :$url");
 
       final data = jsonDecode(response.body);
       return ApiResponse.fromJson(data);
