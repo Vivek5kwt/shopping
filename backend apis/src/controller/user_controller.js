@@ -6,6 +6,8 @@ import { Product } from "../models/products.js";
 import { request } from "http";
 
 import Order from "../models/order.js";
+
+const GOOGLE_SERVER_CLIENT_ID = process.env.GOOGLE_SERVER_CLIENT_ID || "";
 export const signup = async (request, response) => {
   const { name, email, password, type } = request.body; // Added type
   try {
@@ -114,6 +116,118 @@ export const login = async (request, response) => {
     });
   } catch (error) {
     console.log(`Error in login Controller: ${error.message}`);
+    response.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const socialLogin = async (request, response) => {
+  try {
+    const { provider, idToken, accessToken, profile } = request.body;
+
+    if (!provider || !idToken) {
+      return response.status(400).json({
+        success: false,
+        message: "Provider and idToken are required",
+      });
+    }
+
+    if (provider !== "google") {
+      return response.status(400).json({
+        success: false,
+        message: "Unsupported social provider",
+      });
+    }
+
+    const googleResponse = await fetch(
+      `https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`
+    );
+
+    if (!googleResponse.ok) {
+      return response.status(401).json({
+        success: false,
+        message: "Invalid Google token",
+      });
+    }
+
+    const googlePayload = await googleResponse.json();
+
+    if (
+      GOOGLE_SERVER_CLIENT_ID &&
+      googlePayload.aud !== GOOGLE_SERVER_CLIENT_ID.trim()
+    ) {
+      return response.status(401).json({
+        success: false,
+        message: "Google token not meant for this application",
+      });
+    }
+
+    const email = googlePayload.email;
+
+    if (!email) {
+      return response.status(400).json({
+        success: false,
+        message: "Google account does not contain an email address",
+      });
+    }
+
+    const displayName =
+      profile?.name || googlePayload.name || email.split("@")[0];
+    const avatar = profile?.avatar || googlePayload.picture || "";
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(googlePayload.sub, salt);
+
+      user = new User({
+        name: displayName,
+        email,
+        password: hashedPassword,
+        profilePic: avatar,
+        type: "user",
+      });
+
+      await user.save();
+    } else {
+      let isUpdated = false;
+
+      if (displayName && user.name !== displayName) {
+        user.name = displayName;
+        isUpdated = true;
+      }
+
+      if (avatar && user.profilePic !== avatar) {
+        user.profilePic = avatar;
+        isUpdated = true;
+      }
+
+      if (isUpdated) {
+        await user.save();
+      }
+    }
+
+    const token = generateToken(user._id);
+
+    return response.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        type: user.type,
+        profilePic: user.profilePic,
+        address: user.address,
+        cart: user.cart,
+      },
+    });
+  } catch (error) {
+    console.log(`Error in socialLogin Controller: ${error.message}`);
     response.status(500).json({
       success: false,
       message: "Internal Server Error",

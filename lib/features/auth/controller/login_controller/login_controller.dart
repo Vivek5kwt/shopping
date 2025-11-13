@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/config/app_config.dart';
 import 'package:shop/custom_bottom_navbar.dart';
 import 'package:shop/features/admin/features/widgets/amdin_panel_wrapper.dart';
 import 'package:shop/features/auth/controller/auth/auth_provider.dart';
@@ -124,15 +126,31 @@ class LoginController with ChangeNotifier {
       _status = AuthStatus.loading;
       notifyListeners();
 
-      final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+      if (AppConfig.isMissingAndroidServerClientId) {
+        _googleLoading = false;
+        _status = AuthStatus.unauthenticated;
+        _message =
+            'Google Sign-In is not configured. Provide GOOGLE_SERVER_CLIENT_ID via --dart-define when building the app.';
+        notifyListeners();
+        CustomSnackbars.showError(
+          context,
+          'Google Sign-In',
+          _message,
+        );
+        return;
+      }
 
-      // Try initialize (may be optional on some platforms)
-      try {
-        await googleSignIn.initialize();
-      } catch (_) {}
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: AppConfig.googleAndroidClientId.isNotEmpty
+            ? AppConfig.googleAndroidClientId
+            : null,
+        serverClientId: AppConfig.googleServerClientId.isNotEmpty
+            ? AppConfig.googleServerClientId
+            : null,
+        scopes: const ['email', 'profile'],
+      );
 
-      // <<< CORRECT LINE: use authenticate() to get the account >>>
-      final GoogleSignInAccount? account = await googleSignIn.authenticate();
+      final GoogleSignInAccount? account = await googleSignIn.signIn();
 
       if (account == null) {
         _googleLoading = false;
@@ -143,8 +161,9 @@ class LoginController with ChangeNotifier {
         return;
       }
 
-      final GoogleSignInAuthentication authentication = await account.authentication;
-      final String? idToken = authentication.idToken ?? authentication.idToken;
+      final GoogleSignInAuthentication authentication =
+          await account.authentication;
+      final String? idToken = authentication.idToken;
 
       if (idToken == null) {
         _googleLoading = false;
@@ -155,17 +174,18 @@ class LoginController with ChangeNotifier {
         return;
       }
 
-      /*final response = await ApiService.socialLogin(
+      final response = await ApiService.socialLogin(
         provider: 'google',
-        token: idToken,
-        extraData: {
+        idToken: idToken,
+        accessToken: authentication.accessToken,
+        profile: {
           'email': account.email,
           'name': account.displayName ?? '',
           'avatar': account.photoUrl ?? '',
         },
       );
 
-      await _handleSocialLoginResponse(response, context);*/
+      await _handleSocialLoginResponse(response, context);
     } catch (e) {
       _googleLoading = false;
       _status = AuthStatus.unauthenticated;
