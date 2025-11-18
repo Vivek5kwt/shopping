@@ -203,6 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         backgroundColor: statusColor,
         drawer: Drawer(
+          backgroundColor: const Color(0xFFF8F8F9),
           child: SafeArea(
             child: Consumer<AuthProvider>(
               builder: (context, controller, _) {
@@ -214,122 +215,216 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.all(defaultPadding),
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Color(0xFF111827), Color(0xFF1F2937)],
+                          colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
                       ),
-                      child: Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CircleAvatar(
-                            radius: 32,
-                            backgroundColor: Colors.white.withOpacity(.1),
-                            child: const Icon(Iconsax.shop, color: Colors.white, size: 28),
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 32,
+                                backgroundColor: Colors.white.withOpacity(.1),
+                                child:
+                                    const Icon(Iconsax.shop, color: Colors.white, size: 28),
+                              ),
+                              const SizedBox(width: defaultPadding),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      user?.name.isNotEmpty == true ? user!.name : 'Guest',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      user?.email ?? 'Sign in to personalize your feed',
+                                      style: const TextStyle(color: Colors.white70),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: defaultPadding),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  user?.name.isNotEmpty == true ? user!.name : 'Guest',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                          const SizedBox(height: defaultPadding),
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(.1),
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: const [
+                                    Icon(Icons.verified, color: Colors.white, size: 16),
+                                    SizedBox(width: 6),
+                                    Text('Premium member',
+                                        style: TextStyle(color: Colors.white)),
+                                  ],
+                                ),
+                              ),
+                              const Spacer(),
+                              TextButton.icon(
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    side: BorderSide(color: Colors.white.withOpacity(.4)),
                                   ),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  user?.email ?? 'Sign in to personalize your feed',
-                                  style: const TextStyle(color: Colors.white70),
-                                ),
-                              ],
-                            ),
+                                onPressed: () {
+                                  Navigator.of(context).maybePop();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Profile coming soon!')),
+                                  );
+                                },
+                                icon: const Icon(Iconsax.user, size: 18),
+                                label: const Text('View profile'),
+                              )
+                            ],
                           ),
                         ],
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(defaultPadding),
-                      child: Container(
-                        padding: const EdgeInsets.all(defaultPadding),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Row(
-                          children: [
-                            _DrawerStat(title: 'Orders', value: '12'),
-                            const SizedBox(
-                              height: 40,
-                              child: VerticalDivider(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(defaultPadding),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(18),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(.04),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 10),
+                                )
+                              ],
                             ),
-                            _DrawerStat(title: 'Wishlist', value: '8'),
-                            const SizedBox(
-                              height: 40,
-                              child: VerticalDivider(),
+                            child: Row(
+                              children: [
+                                _DrawerStat(title: 'Orders', value: '12'),
+                                const SizedBox(
+                                  height: 40,
+                                  child: VerticalDivider(),
+                                ),
+                                _DrawerStat(title: 'Wishlist', value: '8'),
+                                const SizedBox(
+                                  height: 40,
+                                  child: VerticalDivider(),
+                                ),
+                                _DrawerStat(
+                                  title: 'Cart',
+                                  value: '${user?.cart.length ?? 0}',
+                                ),
+                              ],
                             ),
-                            _DrawerStat(title: 'Cart', value: '${user?.cart.length ?? 0}'),
-                          ],
+                          ),
+                          const SizedBox(height: defaultPadding),
+                          const Text(
+                            'Quick actions',
+                            style: TextStyle(
+                              fontSize: 14,
+                              letterSpacing: 0.3,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              _QuickActionChip(
+                                icon: Iconsax.shopping_bag,
+                                label: 'My Bag',
+                                onTap: () {
+                                  Navigator.of(context).maybePop();
+                                  openCart();
+                                },
+                              ),
+                              _QuickActionChip(
+                                icon: Iconsax.location,
+                                label: 'Addresses',
+                                onTap: () {
+                                  Navigator.of(context).maybePop();
+                                  openAddresses();
+                                },
+                              ),
+                              _QuickActionChip(
+                                icon: Iconsax.notification,
+                                label: 'Notifications',
+                                badgeCount: notificationCount,
+                                onTap: () {
+                                  Navigator.of(context).maybePop();
+                                  openNotifications();
+                                },
+                              ),
+                              _QuickActionChip(
+                                icon: Iconsax.clock,
+                                label: 'Recent view',
+                                onTap: () {
+                                  Navigator.of(context).maybePop();
+                                  Future.microtask(() => _scrollToKey(_recentKey));
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+                      child: Text(
+                        'Browse',
+                        style: TextStyle(
+                          fontSize: 14,
+                          letterSpacing: 0.3,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black54,
                         ),
                       ),
                     ),
-                    ListTile(
-                      leading: const Icon(Icons.history),
-                      title: const Text('Recent View'),
+                    const SizedBox(height: 8),
+                    _DrawerTile(
+                      icon: Icons.history,
+                      title: 'Recent View',
+                      subtitle: 'Jump back into what you explored',
                       onTap: () {
                         Navigator.of(context).maybePop();
                         Future.microtask(() => _scrollToKey(_recentKey));
                       },
                     ),
-                    ListTile(
-                      leading: const Icon(Icons.trending_up),
-                      title: const Text('Trending (T-shirts)'),
+                    _DrawerTile(
+                      icon: Icons.trending_up,
+                      title: 'Trending (T-shirts)',
+                      subtitle: 'Fresh looks curated for you',
                       onTap: () {
                         Navigator.of(context).maybePop();
                         Future.microtask(() => _scrollToKey(_trendingKey));
                       },
                     ),
-                    ListTile(
-                      leading: const Icon(Iconsax.notification),
-                      title: const Text('Notifications'),
-                      trailing: notificationCount > 0
-                          ? CircleAvatar(
-                              radius: 12,
-                              backgroundColor: Colors.red,
-                              child: Text(
-                                '$notificationCount',
-                                style: const TextStyle(color: Colors.white, fontSize: 12),
-                              ),
-                            )
-                          : null,
-                      onTap: () {
-                        Navigator.of(context).maybePop();
-                        openNotifications();
-                      },
-                    ),
-                    ListTile(
-                      leading: const Icon(Iconsax.shopping_bag),
-                      title: const Text('My Bag'),
-                      onTap: () {
-                        Navigator.of(context).maybePop();
-                        openCart();
-                      },
-                    ),
-                    ListTile(
-                      leading: const Icon(Iconsax.location),
-                      title: const Text('Saved Addresses'),
-                      onTap: () {
-                        Navigator.of(context).maybePop();
-                        openAddresses();
-                      },
-                    ),
-                    const Divider(),
-                    ListTile(
-                      leading: const Icon(Icons.receipt_long),
-                      title: const Text('My Orders'),
-                      subtitle: const Text('Track & manage recent purchases'),
+                    _DrawerTile(
+                      icon: Icons.receipt_long,
+                      title: 'My Orders',
+                      subtitle: 'Track & manage recent purchases',
                       onTap: () {
                         Navigator.of(context).maybePop();
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -337,6 +432,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                       },
                     ),
+                    const SizedBox(height: defaultPadding * 2),
                   ],
                 );
               },
@@ -633,6 +729,114 @@ class _DrawerStat extends StatelessWidget {
             style: const TextStyle(color: Colors.black54),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _DrawerTile extends StatelessWidget {
+  const _DrawerTile({
+    required this.icon,
+    required this.title,
+    this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String? subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        elevation: 0,
+        color: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: ListTile(
+          onTap: onTap,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          leading: Container(
+            height: 44,
+            width: 44,
+            decoration: BoxDecoration(
+              color: const Color(0xFFEEF2FF),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(icon, color: const Color(0xFF4338CA)),
+          ),
+          title: Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+          subtitle: subtitle != null ? Text(subtitle!) : null,
+          trailing: const Icon(Iconsax.arrow_right_3),
+        ),
+      ),
+    );
+  }
+}
+
+class _QuickActionChip extends StatelessWidget {
+  const _QuickActionChip({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.badgeCount,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final int? badgeCount;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool showBadge = (badgeCount ?? 0) > 0;
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(30),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(30),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(.03),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              )
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 18, color: const Color(0xFF0F172A)),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: const TextStyle(fontWeight: FontWeight.w500),
+              ),
+              if (showBadge) ...[
+                const SizedBox(width: 6),
+                CircleAvatar(
+                  radius: 10,
+                  backgroundColor: Colors.red,
+                  child: Text(
+                    '$badgeCount',
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ),
+              ]
+            ],
+          ),
+        ),
       ),
     );
   }
