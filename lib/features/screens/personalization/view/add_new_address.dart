@@ -207,7 +207,7 @@ class AddNewAddress extends StatelessWidget {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             const Icon(
-                                              Iconsax.location_add5,
+                                              Iconsax.location_add,
                                               color: Colors.white,
                                             ),
                                             const SizedBox(width: TSizes.sm),
@@ -330,7 +330,7 @@ class _AddressHeroCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(TSizes.cardRadiusMd),
             ),
             child: const Icon(
-              Iconsax.location5,
+              Iconsax.location,
               color: Colors.white,
               size: 32,
             ),
