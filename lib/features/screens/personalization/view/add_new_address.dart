@@ -78,11 +78,39 @@ class AddNewAddress extends StatelessWidget {
                               validator: TValidator.validatePhoneNumberSimple,
                             ),
                             const SizedBox(height: TSizes.spaceBtwSections),
-                            Text(
-                              'Location details',
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w700,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'Location details',
+                                    style:
+                                        theme.textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: TSizes.md),
+                                OutlinedButton.icon(
+                                  icon: controller.isFetchingLocation
+                                      ? const SizedBox(
+                                          width: 16,
+                                          height: 16,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : const Icon(Iconsax.gps),
+                                  label: Text(
+                                    controller.isFetchingLocation
+                                        ? 'Detecting...'
+                                        : 'Use current location',
+                                  ),
+                                  onPressed: controller.isFetchingLocation
+                                      ? null
+                                      : () => controller.useCurrentLocation(context),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: TSizes.spaceBtwItems),
                             _ThemedTextField(
