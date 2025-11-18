@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/features/models/Category.dart';
@@ -12,12 +13,24 @@ class CategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F8FF),
-      appBar: AppBar(
-        title: const Text('Categories'),
-        centerTitle: true,
+    final theme = Theme.of(context);
+    final bool isDark = theme.brightness == Brightness.dark;
+    const lightBackground = Color(0xFFF8F8FF);
+    final Color statusColor = isDark ? theme.scaffoldBackgroundColor : lightBackground;
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: statusColor,
+        statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+        statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
       ),
+      child: Scaffold(
+        backgroundColor: statusColor,
+        appBar: AppBar(
+          backgroundColor: statusColor,
+          title: const Text('Categories'),
+          centerTitle: true,
+        ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(defaultPadding),
