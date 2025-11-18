@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/features/admin/features/models/product_model.dart';
@@ -117,25 +118,31 @@ class _DetailsScreenState extends State<DetailsScreen> {
   Widget build(BuildContext context) {
     final isDark = THelperFunctions.isDarkMode(context);
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomeAppbar(
-        showbackArrow: true,
-        actions: [
-          FavouriteIcon(
-            color: Colors.grey.shade100,
-            productId: widget.product.id!,
-          ),
-          SizedBox(width: 10),
-        ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: CurveWidget(
-              child: Container(
-                color: isDark ? TColors.darkerGrey : TColors.light,
-                child: Stack(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: CustomeAppbar(
+          showbackArrow: true,
+          actions: [
+            FavouriteIcon(
+              color: Colors.grey.shade100,
+              productId: widget.product.id!,
+            ),
+            SizedBox(width: 10),
+          ],
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: CurveWidget(
+                child: Container(
+                  color: isDark ? TColors.darkerGrey : TColors.light,
+                  child: Stack(
                   children: [
                     SizedBox(
                       height: 400,
@@ -218,146 +225,143 @@ class _DetailsScreenState extends State<DetailsScreen> {
           ),
           const SizedBox(height: defaultPadding * 1.2),
           Expanded(
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(
-                defaultPadding,
-                defaultPadding * 2,
-                defaultPadding,
-                defaultPadding,
-              ),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(defaultBorderRadius * 3),
-                  topRight: Radius.circular(defaultBorderRadius * 3),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(
+                  defaultPadding,
+                  defaultPadding * 2,
+                  defaultPadding,
+                  defaultPadding,
                 ),
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(defaultBorderRadius * 3),
+                    topRight: Radius.circular(defaultBorderRadius * 3),
+                  ),
+                ),
+                child: SingleChildScrollView(
+                  child: SafeArea(
+                    top: false,
+                    bottom: true,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(
-                            widget.product.name,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                        ),
-                        const SizedBox(width: defaultPadding),
-                        Text(
-                          "\$${widget.product.price.toStringAsFixed(2)}",
-                          style: Theme.of(context).textTheme.titleLarge!.apply(
-                            color: Color(0xFF059669),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: TSizes.spaceBtwSections,
-                      ),
-                      child: Text(
-                        widget.product.descriptions,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(height: 1.5),
-                      ),
-                    ),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Colors",
-                              style: Theme.of(context).textTheme.titleSmall,
-                            ),
-                            const SizedBox(height: defaultPadding / 2),
-                            ValueListenableBuilder<int>(
-                              valueListenable: _selectedColorNotifier,
-                              builder: (context, selectedColor, _) {
-                                return Row(
-                                  children: List.generate(
-                                    availableColors.length,
-                                    (index) => GestureDetector(
-                                      onTap: () {
-                                        if (_selectedColorNotifier.value !=
-                                            index) {
-                                          _selectedColorNotifier.value = index;
-                                        }
-                                      },
-                                      child: ColorDot(
-                                        color: availableColors[index],
-                                        isActive: selectedColor == index,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Ratings",
-                              style: Theme.of(context).textTheme.titleSmall,
-                            ),
-                            const SizedBox(height: defaultPadding / 2),
-
-                            RatingBars(product: widget.product),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: TSizes.spaceBtwSections),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(defaultPadding),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: [
+                          Expanded(
+                            child: Text(
+                              widget.product.name,
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                          ),
+                          const SizedBox(width: defaultPadding),
                           Text(
-                            'Product details',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          const SizedBox(height: 12),
-                          _buildInfoRow('Category', widget.product.category,
-                              Icons.category_outlined),
-                          _buildInfoRow(
-                            'Availability',
-                            widget.product.quantity > 0
-                                ? '${widget.product.quantity} in stock'
-                                : 'Out of stock',
-                            Icons.check_circle_outline,
-                          ),
-                          _buildInfoRow(
-                            'Shipping',
-                            r'Free standard shipping on orders over $50',
-                            Icons.local_shipping_outlined,
+                            "\$${widget.product.price.toStringAsFixed(2)}",
+                            style: Theme.of(context).textTheme.titleLarge!.apply(
+                                  color: const Color(0xFF059669),
+                                ),
                           ),
                         ],
                       ),
-                    ),
-
-                    const SizedBox(height: TSizes.spaceBtwSections),
-                    Consumer2<CartProvider, AuthProvider>(
-                      builder: (context, cartProvider, authProvider, chid) {
-                        return Center(
-                          child: SizedBox(
-                            width: 200,
-
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: TSizes.spaceBtwSections,
+                        ),
+                        child: Text(
+                          widget.product.descriptions,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(height: 1.5),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Colors",
+                                style: Theme.of(context).textTheme.titleSmall,
+                              ),
+                              const SizedBox(height: defaultPadding / 2),
+                              ValueListenableBuilder<int>(
+                                valueListenable: _selectedColorNotifier,
+                                builder: (context, selectedColor, _) {
+                                  return Row(
+                                    children: List.generate(
+                                      availableColors.length,
+                                      (index) => GestureDetector(
+                                        onTap: () {
+                                          if (_selectedColorNotifier.value !=
+                                              index) {
+                                            _selectedColorNotifier.value =
+                                                index;
+                                          }
+                                        },
+                                        child: ColorDot(
+                                          color: availableColors[index],
+                                          isActive: selectedColor == index,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Ratings",
+                                style: Theme.of(context).textTheme.titleSmall,
+                              ),
+                              const SizedBox(height: defaultPadding / 2),
+                              RatingBars(product: widget.product),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: TSizes.spaceBtwSections),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(defaultPadding),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Product details',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const SizedBox(height: 12),
+                            _buildInfoRow('Category', widget.product.category,
+                                Icons.category_outlined),
+                            _buildInfoRow(
+                              'Availability',
+                              widget.product.quantity > 0
+                                  ? '${widget.product.quantity} in stock'
+                                  : 'Out of stock',
+                              Icons.check_circle_outline,
+                            ),
+                            _buildInfoRow(
+                              'Shipping',
+                              r'Free standard shipping on orders over $50',
+                              Icons.local_shipping_outlined,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: TSizes.spaceBtwSections),
+                      Consumer2<CartProvider, AuthProvider>(
+                        builder: (context, cartProvider, authProvider, chid) {
+                          return SizedBox(
+                            width: double.infinity,
                             child: widget.product.quantity > 0
                                 ? ElevatedButton(
                                     onPressed: () async {
@@ -373,12 +377,14 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       );
                                     },
                                     style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 16,
+                                      ),
                                       backgroundColor: primaryColor,
                                       foregroundColor: primaryColor,
                                       shape: const StadiumBorder(),
                                       side: BorderSide.none,
                                     ),
-
                                     child: const Text(
                                       "Add to Cart",
                                       style: TextStyle(color: Colors.white),
@@ -387,36 +393,38 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 : Container(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 8,
-                                      vertical: 4,
+                                      vertical: 16,
                                     ),
                                     decoration: BoxDecoration(
                                       color: const Color(
                                         0xFFEF4444,
                                       ).withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(6),
+                                      borderRadius: BorderRadius.circular(50),
                                     ),
-                                    child: Center(
+                                    child: const Center(
                                       child: Text(
                                         "Out of Stock",
                                         style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w500,
-                                          color: const Color(0xFFDC2626),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFFDC2626),
                                         ),
                                       ),
                                     ),
                                   ),
-                          ),
-                        );
-                      },
-                    ),
-                    SizedBox(height: TSizes.spaceBtwItems),
-                  ],
+                          );
+                        },
+                      ),
+                      const SizedBox(
+                        height: TSizes.spaceBtwSections * 1.5,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
