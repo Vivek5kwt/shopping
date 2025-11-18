@@ -195,12 +195,14 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
+    final systemUiStyle = SystemUiOverlayStyle(
+      statusBarColor: statusColor,
+      statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+      statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+    );
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: statusColor,
-        statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-        statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
-      ),
+      value: systemUiStyle,
       child: Scaffold(
         backgroundColor: statusColor,
         drawer: Drawer(
@@ -441,6 +443,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         appBar: AppBar(
+          backgroundColor: statusColor,
+          elevation: 0,
+          surfaceTintColor: Colors.transparent,
+          systemOverlayStyle: systemUiStyle,
           leading: Builder(
             builder: (context) {
               return IconButton(
