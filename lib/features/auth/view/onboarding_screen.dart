@@ -319,6 +319,8 @@ class _BottomActionButton extends StatelessWidget {
                       Expanded(
                         child: Text(
                           label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: Colors.white,
