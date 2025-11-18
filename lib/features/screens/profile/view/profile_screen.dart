@@ -5,6 +5,9 @@ import 'package:shop/features/auth/controller/user/user_controller.dart';
 import 'package:shop/features/controllers/order/order_controller.dart';
 import 'package:shop/features/screens/favorite/view/favorite_screen.dart';
 import 'package:shop/features/screens/orders/view/order_list.dart';
+import 'package:shop/features/screens/profile/view/addresses_screen.dart';
+import 'package:shop/features/screens/profile/view/edit_profile_screen.dart';
+import 'package:shop/features/screens/profile/view/payment_methods_screen.dart';
 import 'package:shop/utils/localization/app_localizations.dart';
 import 'package:shop/utils/localization/language_provider.dart';
 import 'package:shop/utils/responsive/responsive.dart';
@@ -162,7 +165,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           subtitle: loc.editProfileSubtitle,
                           color: const Color(0xFF3B82F6),
                           isDark: isDark,
-                          onTap: () {},
+                          onTap: () => Get.to(() => const EditProfileScreen()),
                         ),
                         const Divider(height: 1),
                         _buildOption(
@@ -173,7 +176,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           subtitle: loc.addressesSubtitle,
                           color: const Color(0xFFEC4899),
                           isDark: isDark,
-                          onTap: () {},
+                          onTap: () => Get.to(() => const AddressesScreen()),
                         ),
                         const Divider(height: 1),
                         _buildOption(
@@ -184,7 +187,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           subtitle: loc.paymentMethodsSubtitle,
                           color: const Color(0xFF8B5CF6),
                           isDark: isDark,
-                          onTap: () {},
+                          onTap: () => Get.to(() => const PaymentMethodsScreen()),
                         ),
                       ]),
 
