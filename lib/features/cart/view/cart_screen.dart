@@ -56,55 +56,62 @@ class CartScreen extends StatelessWidget {
           print("sum: $sum");
           print("cart items length: ${cartItems.length}");
       
-          return cartItems.isEmpty
-              ? emptyWidget
-              : Scaffold(
-                  appBar: AppBar(
-                    automaticallyImplyLeading: false,
-                    leading: showBackButton
-                        ? IconButton(
-                            icon: const Icon(Icons.arrow_back_ios_new),
-                            onPressed: () => navigator.maybePop(),
-                          )
-                        : null,
-                    title: Text(
-                      'Cart',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    actions: [
-                      if (cartItems.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 15.0),
-                          child: ElevatedButton(
-                            onPressed: () => Get.to(() => CheckoutScreen()),
-                            style: ElevatedButton.styleFrom(
-                              elevation: 0,
-                              backgroundColor: Colors.blue,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 8,
-                              ),
-                              shape: const StadiumBorder(),
-                            ),
-                            child: Text(
-                              "Checkout \$$sum",
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
+          final body = cartItems.isEmpty
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(TSizes.defaultSpace),
+                    child: emptyWidget,
                   ),
-                  body: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(TSizes.defaultSpace),
-                      child: CartItem(isDark: isDark),
-                    ),
+                )
+              : SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(TSizes.defaultSpace),
+                    child: CartItem(isDark: isDark),
                   ),
                 );
+
+          return Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              leading: showBackButton
+                  ? IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new),
+                      onPressed: () => navigator.maybePop(),
+                    )
+                  : null,
+              title: Text(
+                'Cart',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              actions: [
+                if (cartItems.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 15.0),
+                    child: ElevatedButton(
+                      onPressed: () => Get.to(() => CheckoutScreen()),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        shape: const StadiumBorder(),
+                      ),
+                      child: Text(
+                        "Checkout \$$sum",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            body: body,
+          );
         },
       ),
     );
