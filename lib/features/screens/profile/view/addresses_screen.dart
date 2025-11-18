@@ -225,7 +225,7 @@ class _AddressTypeChip extends StatelessWidget {
     required this.address,
   });
 
-  final Responsive responsive;
+  final ResponsiveUtils responsive;
   final _AddressItem address;
 
   @override
@@ -266,7 +266,7 @@ class _AddressTypeChip extends StatelessWidget {
 class _DefaultBadge extends StatelessWidget {
   const _DefaultBadge({required this.responsive, required this.loc});
 
-  final Responsive responsive;
+  final ResponsiveUtils responsive;
   final AppLocalizations loc;
 
   @override
@@ -315,7 +315,7 @@ class _ActionChip extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  final Responsive responsive;
+  final ResponsiveUtils responsive;
 
   @override
   Widget build(BuildContext context) {
@@ -404,7 +404,7 @@ class _HeaderMessage extends StatelessWidget {
 class _AddressHero extends StatelessWidget {
   const _AddressHero({required this.responsive});
 
-  final Responsive responsive;
+  final ResponsiveUtils responsive;
 
   @override
   Widget build(BuildContext context) {
@@ -475,7 +475,7 @@ class _AddressHero extends StatelessWidget {
 class _QuickActions extends StatelessWidget {
   const _QuickActions({required this.responsive});
 
-  final Responsive responsive;
+  final ResponsiveUtils responsive;
 
   @override
   Widget build(BuildContext context) {
@@ -534,7 +534,7 @@ class _QuickActionCard extends StatelessWidget {
   });
 
   final _QuickActionData action;
-  final Responsive responsive;
+  final ResponsiveUtils responsive;
 
   @override
   Widget build(BuildContext context) {
