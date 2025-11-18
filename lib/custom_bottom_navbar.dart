@@ -6,7 +6,7 @@ import 'package:shop/features/screens/home/home_screen.dart';
 
 import 'features/cart/view/cart_screen.dart';
 import 'features/screens/favorite/view/favorite_screen.dart';
-import 'features/screens/home/components/categories.dart';
+import 'features/screens/categories/categories_screen.dart';
 import 'features/screens/profile/view/profile_screen.dart';
 
 class MainController with ChangeNotifier {
@@ -42,27 +42,35 @@ class _MainWrapperState extends State<MainWrapper> {
     final controller = Provider.of<MainController>(context);
     const pages = [
       HomeScreen(),
-      Categories(),
+      CategoriesScreen(),
       CartScreen(),
       FavoriteScreen(),
       ProfilePage(),
     ];
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F8FF),
-      body: Stack(
-        children: [
-          IndexedStack(
-            index: controller.currentIndex,
-            children: pages,
-          ),
-          const Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: BottomBar(),
-          ),
-        ],
+    final overlayStyle = SystemUiOverlayStyle.dark.copyWith(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    );
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: overlayStyle,
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF8F8FF),
+        body: Stack(
+          children: [
+            IndexedStack(
+              index: controller.currentIndex,
+              children: pages,
+            ),
+            const Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: BottomBar(),
+            ),
+          ],
+        ),
       ),
     );
   }
