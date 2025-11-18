@@ -5,6 +5,10 @@ import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/features/auth/controller/auth/auth_provider.dart';
+import 'package:shop/features/cart/view/cart_screen.dart';
+import 'package:shop/features/screens/home/notification_screen.dart';
+import 'package:shop/features/screens/profile/view/addresses_screen.dart';
+
 import 'components/categories.dart';
 import 'components/new_arrival_products.dart';
 import 'components/search_form.dart';
@@ -172,6 +176,24 @@ class _HomeScreenState extends State<HomeScreen> {
     const lightBackground = Color(0xFFF8F8FF);
     final Color statusColor = isDark ? theme.scaffoldBackgroundColor : lightBackground;
 
+    void openNotifications() {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const NotificationScreen()),
+      );
+    }
+
+    void openCart() {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const CartScreen()),
+      );
+    }
+
+    void openAddresses() {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const AddressesScreen()),
+      );
+    }
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: statusColor,
@@ -182,107 +204,142 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: statusColor,
         drawer: Drawer(
           child: SafeArea(
-            child: Column(
-              children: [
-                DrawerHeader(
-                  margin: EdgeInsets.zero,
-                  child: Row(
-                    children: [
-                      const CircleAvatar(
-                        radius: 28,
-                        backgroundColor: Colors.black12,
-                        child: Icon(Iconsax.shop, size: 28),
-                      ),
-                      const SizedBox(width: defaultPadding / 2),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text('Welcome!', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                            SizedBox(height: 4),
-                            Text('Your personalized store', style: TextStyle(color: Colors.black54)),
-                          ],
+            child: Consumer<AuthProvider>(
+              builder: (context, controller, _) {
+                final user = controller.user;
+                return ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(defaultPadding),
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xFF111827), Color(0xFF1F2937)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                      )
-                    ],
-                  ),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.history),
-                  title: const Text('Recent View'),
-                  onTap: () {
-                    Navigator.of(context).maybePop();
-                    // Scroll to recent section
-                    Future.microtask(() => _scrollToKey(_recentKey));
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.trending_up),
-                  title: const Text('Trending (T-shirts)'),
-                  onTap: () {
-                    Navigator.of(context).maybePop();
-                    Future.microtask(() => _scrollToKey(_trendingKey));
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.checkroom),
-                  title: const Text('Sold T-Shirts'),
-                  onTap: () {
-                    Navigator.of(context).maybePop();
-                    Future.microtask(() => _scrollToKey(_trendingKey));
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.notifications),
-                  title: const Text('Notifications'),
-                  trailing: notificationCount > 0
-                      ? CircleAvatar(
-                          radius: 12,
-                          backgroundColor: Colors.red,
-                          child: Text(
-                            '$notificationCount',
-                            style: const TextStyle(color: Colors.white, fontSize: 12),
+                      ),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 32,
+                            backgroundColor: Colors.white.withOpacity(.1),
+                            child: const Icon(Iconsax.shop, color: Colors.white, size: 28),
                           ),
-                        )
-                      : null,
-                  onTap: () {
-                    Navigator.of(context).maybePop();
-                    showDialog(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                        title: const Text('Notifications'),
-                        content: const Text('You have new notifications.'),
-                        actions: [
-                          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Close')),
+                          const SizedBox(width: defaultPadding),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  user?.name.isNotEmpty == true ? user!.name : 'Guest',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  user?.email ?? 'Sign in to personalize your feed',
+                                  style: const TextStyle(color: Colors.white70),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
-                    );
-                  },
-                ),
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.all(defaultPadding),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            // Example action
-                            Navigator.of(context).maybePop();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('View all orders tapped')),
-                            );
-                          },
-                          icon: const Icon(Icons.receipt_long),
-                          label: const Text('My Orders'),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(defaultPadding),
+                      child: Container(
+                        padding: const EdgeInsets.all(defaultPadding),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Row(
+                          children: [
+                            _DrawerStat(title: 'Orders', value: '12'),
+                            const SizedBox(
+                              height: 40,
+                              child: VerticalDivider(),
+                            ),
+                            _DrawerStat(title: 'Wishlist', value: '8'),
+                            const SizedBox(
+                              height: 40,
+                              child: VerticalDivider(),
+                            ),
+                            _DrawerStat(title: 'Cart', value: '${user?.cart.length ?? 0}'),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ],
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.history),
+                      title: const Text('Recent View'),
+                      onTap: () {
+                        Navigator.of(context).maybePop();
+                        Future.microtask(() => _scrollToKey(_recentKey));
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.trending_up),
+                      title: const Text('Trending (T-shirts)'),
+                      onTap: () {
+                        Navigator.of(context).maybePop();
+                        Future.microtask(() => _scrollToKey(_trendingKey));
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Iconsax.notification),
+                      title: const Text('Notifications'),
+                      trailing: notificationCount > 0
+                          ? CircleAvatar(
+                              radius: 12,
+                              backgroundColor: Colors.red,
+                              child: Text(
+                                '$notificationCount',
+                                style: const TextStyle(color: Colors.white, fontSize: 12),
+                              ),
+                            )
+                          : null,
+                      onTap: () {
+                        Navigator.of(context).maybePop();
+                        openNotifications();
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Iconsax.shopping_bag),
+                      title: const Text('My Bag'),
+                      onTap: () {
+                        Navigator.of(context).maybePop();
+                        openCart();
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Iconsax.location),
+                      title: const Text('Saved Addresses'),
+                      onTap: () {
+                        Navigator.of(context).maybePop();
+                        openAddresses();
+                      },
+                    ),
+                    const Divider(),
+                    ListTile(
+                      leading: const Icon(Icons.receipt_long),
+                      title: const Text('My Orders'),
+                      subtitle: const Text('Track & manage recent purchases'),
+                      onTap: () {
+                        Navigator.of(context).maybePop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Orders coming soon!')),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -298,16 +355,34 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset("assets/icons/Location.svg"),
-              const SizedBox(width: defaultPadding / 2),
-              Text(
-                "15/2 New Texas",
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ],
+          title: InkWell(
+            borderRadius: BorderRadius.circular(30),
+            onTap: openAddresses,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset("assets/icons/Location.svg"),
+                const SizedBox(width: defaultPadding / 2),
+                Consumer<AuthProvider>(
+                  builder: (context, controller, _) {
+                    final address = controller.user?.address;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          address != null && address.isNotEmpty ? address : "15/2 New Texas",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        const Text(
+                          'Manage address',
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
           actions: [
             // Notification icon with badge
@@ -316,18 +391,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.notifications_none, color: Colors.grey),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                        title: const Text('Notifications'),
-                        content: const Text('You have some recent updates.'),
-                        actions: [
-                          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Close')),
-                        ],
-                      ),
-                    );
-                  },
+                  onPressed: openNotifications,
                 ),
                 if (notificationCount > 0)
                   Positioned(
@@ -359,7 +423,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     IconButton(
                       icon: const Icon(Iconsax.shopping_bag, color: Colors.grey),
-                      onPressed: () {},
+                      onPressed: openCart,
                     ),
                     if (cartCount > 0)
                       Positioned(
@@ -414,6 +478,41 @@ class _HomeScreenState extends State<HomeScreen> {
               const Text(
                 "Handpicked For Your Vibe",
                 style: TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 12),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: [
+                      _QuickActionCard(
+                        title: 'Notifications',
+                        subtitle: 'See updates',
+                        icon: Iconsax.notification,
+                        background: const Color(0xFFFFF4EC),
+                        iconColor: const Color(0xFFF97316),
+                        onTap: openNotifications,
+                      ),
+                      _QuickActionCard(
+                        title: 'My Bag',
+                        subtitle: 'Checkout fast',
+                        icon: Iconsax.shopping_bag,
+                        background: const Color(0xFFEFF6FF),
+                        iconColor: const Color(0xFF2563EB),
+                        onTap: openCart,
+                      ),
+                      _QuickActionCard(
+                        title: 'Addresses',
+                        subtitle: 'Update location',
+                        icon: Iconsax.location,
+                        background: const Color(0xFFF0FDF4),
+                        iconColor: const Color(0xFF22C55E),
+                        onTap: openAddresses,
+                      ),
+                    ],
+                  );
+                },
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: defaultPadding),
@@ -505,6 +604,96 @@ class _HomeScreenState extends State<HomeScreen> {
               const NewArrivalProducts(),
 
               const SizedBox(height: 100),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DrawerStat extends StatelessWidget {
+  const _DrawerStat({required this.title, required this.value});
+
+  final String title;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            value,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: const TextStyle(color: Colors.black54),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QuickActionCard extends StatelessWidget {
+  const _QuickActionCard({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.background,
+    required this.iconColor,
+    required this.onTap,
+  });
+
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color background;
+  final Color iconColor;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: background,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          width: 150,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    )
+                  ],
+                ),
+                child: Icon(icon, color: iconColor),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: const TextStyle(color: Colors.black54),
+              ),
             ],
           ),
         ),
