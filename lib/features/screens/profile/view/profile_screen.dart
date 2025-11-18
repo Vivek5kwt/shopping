@@ -5,6 +5,8 @@ import 'package:shop/features/auth/controller/user/user_controller.dart';
 import 'package:shop/features/controllers/order/order_controller.dart';
 import 'package:shop/features/screens/favorite/view/favorite_screen.dart';
 import 'package:shop/features/screens/orders/view/order_list.dart';
+import 'package:shop/utils/localization/app_localizations.dart';
+import 'package:shop/utils/localization/language_provider.dart';
 import 'package:shop/utils/responsive/responsive.dart';
 import 'package:shop/utils/shimmer/shimmer_effect.dart';
 import 'package:shop/utils/theme/theme_provider.dart';
@@ -45,7 +47,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final responsive = context.responsive;
-    print('');
+    final loc = context.loc;
     return Consumer2<UserController, OrderController>(
 
       builder: (context, controller, orderController, child) {
@@ -53,10 +55,10 @@ class _ProfilePageState extends State<ProfilePage> {
         final dynamic user = controller.user;
         final String userName = _safeString(user?.name).isNotEmpty
             ? _safeString(user?.name)
-            : 'Guest User';
+            : loc.profileGuestUser;
         final String userEmail = _safeString(user?.email).isNotEmpty
             ? _safeString(user?.email)
-            : 'No email provided';
+            : loc.profileNoEmail;
         final String profilePic = _safeString(user?.profilePic);
         final int ordersCount = orderController.orders?.length ?? 0;
         final double logoutButtonBottomPadding =
@@ -121,7 +123,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           ResponsiveSizedBox(height: 16),
                           // Stats Row
-                          _buildStatsRow(orderController, responsive, ordersCount),
+                          _buildStatsRow(
+                            orderController,
+                            responsive,
+                            ordersCount,
+                            loc,
+                          ),
                         ],
                       ),
                     ),
@@ -137,14 +144,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Account Section
-                      _buildSectionTitle('Account', responsive),
+                      _buildSectionTitle(loc.sectionAccount, responsive),
                       ResponsiveSizedBox(height: 8),
                       _buildOptionCard(responsive, [
                         _buildOption(
                           responsive: responsive,
                           icon: Icons.person_outline,
-                          title: 'Edit Profile',
-                          subtitle: 'Update your information',
+                          title: loc.editProfile,
+                          subtitle: loc.editProfileSubtitle,
                           color: const Color(0xFF3B82F6),
                           onTap: () {},
                         ),
@@ -152,8 +159,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         _buildOption(
                           responsive: responsive,
                           icon: Icons.location_on_outlined,
-                          title: 'Addresses',
-                          subtitle: 'Manage shipping addresses',
+                          title: loc.addresses,
+                          subtitle: loc.addressesSubtitle,
                           color: const Color(0xFFEC4899),
                           onTap: () {},
                         ),
@@ -161,8 +168,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         _buildOption(
                           responsive: responsive,
                           icon: Icons.payment_outlined,
-                          title: 'Payment Methods',
-                          subtitle: 'Manage your cards',
+                          title: loc.paymentMethods,
+                          subtitle: loc.paymentMethodsSubtitle,
                           color: const Color(0xFF8B5CF6),
                           onTap: () {},
                         ),
@@ -171,16 +178,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       ResponsiveSizedBox(height: 24),
 
                       // Orders Section
-                      _buildSectionTitle('Orders', responsive),
+                      _buildSectionTitle(loc.sectionOrders, responsive),
                       ResponsiveSizedBox(height: 8),
                       _buildOptionCard(responsive, [
                         _buildOption(
                           responsive: responsive,
                           icon: Icons.shopping_bag_outlined,
-                          title: 'My Orders',
-                          subtitle: ordersCount > 0
-                              ? 'You have $ordersCount orders'
-                              : 'No orders yet',
+                          title: loc.myOrders,
+                          subtitle: loc.ordersDescription(ordersCount),
                           color: const Color(0xFF10B981),
                           onTap: () => Get.to(() => OrderListScreen()),
                         ),
@@ -188,8 +193,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         _buildOption(
                           responsive: responsive,
                           icon: Icons.favorite_outline,
-                          title: 'Wishlist',
-                          subtitle: 'Your saved items',
+                          title: loc.wishlist,
+                          subtitle: loc.wishlistSubtitle,
                           color: const Color(0xFFEF4444),
                           onTap: () => Get.to(() => FavoriteScreen()),
                         ),
@@ -197,8 +202,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         _buildOption(
                           responsive: responsive,
                           icon: Icons.star_outline,
-                          title: 'Reviews',
-                          subtitle: 'Your product reviews',
+                          title: loc.reviews,
+                          subtitle: loc.reviewsSubtitle,
                           color: const Color(0xFFF59E0B),
                           onTap: () {},
                         ),
@@ -207,62 +212,80 @@ class _ProfilePageState extends State<ProfilePage> {
                       ResponsiveSizedBox(height: 24),
 
                       // Settings Section
-                      _buildSectionTitle('Settings', responsive),
+                      _buildSectionTitle(loc.sectionSettings, responsive),
                       ResponsiveSizedBox(height: 8),
                       _buildOptionCard(responsive, [
                         _buildOption(
                           responsive: responsive,
                           icon: Icons.notifications_outlined,
-                          title: 'Notifications',
-                          subtitle: 'Manage notification preferences',
+                          title: loc.notifications,
+                          subtitle: loc.notificationsSubtitle,
                           color: const Color(0xFF6366F1),
                           onTap: () {},
                         ),
                         const Divider(height: 1),
-                        _buildOption(
-                          responsive: responsive,
-                          icon: Icons.language_outlined,
-                          title: 'Language',
-                          subtitle: 'English (US)',
-                          color: const Color(0xFF14B8A6),
-                          onTap: () {},
+                        Consumer<LanguageProvider>(
+                          builder: (context, languageProvider, _) {
+                            final languageLabel = loc.translate(
+                              languageProvider.selectedLanguage.labelKey,
+                            );
+                            return _buildOption(
+                              responsive: responsive,
+                              icon: Icons.language_outlined,
+                              title: loc.language,
+                              subtitle: languageLabel,
+                              color: const Color(0xFF14B8A6),
+                              onTap: languageProvider.isInitialized
+                                  ? () => _showLanguageSelector(languageProvider)
+                                  : null,
+                              trailing: const Icon(
+                                Icons.chevron_right,
+                                color: Color(0xFF94A3B8),
+                              ),
+                            );
+                          },
                         ),
                         const Divider(height: 1),
-                        _buildOption(
-                          responsive: responsive,
-                          icon: Icons.dark_mode_outlined,
-                          title: 'Dark Mode',
-                          subtitle: 'Switch theme appearance',
-                          color: const Color(0xFF64748B),
-                          onTap: () {},
-                          trailing: Consumer<ThemeProvider>(
-                            builder: (context, themeProvider, _) {
-                              final bool switchValue = themeProvider.isInitialized
-                                  ? themeProvider.isDarkMode
-                                  : false;
-                              return Switch(
-                                value: switchValue,
+                        Consumer<ThemeProvider>(
+                          builder: (context, themeProvider, _) {
+                            final bool isDarkEnabled =
+                                themeProvider.isInitialized
+                                    ? themeProvider.isDarkMode
+                                    : false;
+                            return _buildOption(
+                              responsive: responsive,
+                              icon: Icons.dark_mode_outlined,
+                              title: loc.darkMode,
+                              subtitle: loc.darkModeSubtitle,
+                              color: const Color(0xFF64748B),
+                              onTap: themeProvider.isInitialized
+                                  ? () =>
+                                      themeProvider.toggleTheme(!isDarkEnabled)
+                                  : null,
+                              trailing: Switch(
+                                value: isDarkEnabled,
                                 onChanged: themeProvider.isInitialized
-                                    ? (value) => themeProvider.toggleTheme(value)
+                                    ? (value) =>
+                                        themeProvider.toggleTheme(value)
                                     : null,
                                 activeColor: const Color(0xFF3B82F6),
-                              );
-                            },
-                          ),
+                              ),
+                            );
+                          },
                         ),
                       ]),
 
                       ResponsiveSizedBox(height: 24),
 
                       // Support Section
-                      _buildSectionTitle('Support', responsive),
+                      _buildSectionTitle(loc.sectionSupport, responsive),
                       ResponsiveSizedBox(height: 8),
                       _buildOptionCard(responsive, [
                         _buildOption(
                           responsive: responsive,
                           icon: Icons.help_outline,
-                          title: 'Help Center',
-                          subtitle: 'FAQs and support',
+                          title: loc.helpCenter,
+                          subtitle: loc.helpCenterSubtitle,
                           color: const Color(0xFF06B6D4),
                           onTap: () {},
                         ),
@@ -270,8 +293,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         _buildOption(
                           responsive: responsive,
                           icon: Icons.privacy_tip_outlined,
-                          title: 'Privacy Policy',
-                          subtitle: 'View our privacy policy',
+                          title: loc.privacyPolicy,
+                          subtitle: loc.privacyPolicySubtitle,
                           color: const Color(0xFF84CC16),
                           onTap: () {},
                         ),
@@ -279,8 +302,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         _buildOption(
                           responsive: responsive,
                           icon: Icons.description_outlined,
-                          title: 'Terms & Conditions',
-                          subtitle: 'View terms of service',
+                          title: loc.terms,
+                          subtitle: loc.termsSubtitle,
                           color: const Color(0xFFA855F7),
                           onTap: () {},
                         ),
@@ -298,7 +321,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 left: responsive.spacing(16),
                 right: responsive.spacing(16),
                 bottom: logoutButtonBottomPadding,
-                child: _buildStickyLogoutButton(responsive),
+                child: _buildStickyLogoutButton(responsive, loc),
               ),
             ],
           ),
@@ -307,7 +330,8 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildStickyLogoutButton(ResponsiveUtils responsive) {
+  Widget _buildStickyLogoutButton(
+      ResponsiveUtils responsive, AppLocalizations loc) {
     // The sticky logout button floats above the custom bottom bar so that it is always tappable.
     // It uses a Consumer to access the UserController and shows a confirmation dialog before logging out.
     return Consumer<UserController>(
@@ -323,16 +347,16 @@ class _ProfilePageState extends State<ProfilePage> {
                   context: context,
                   builder: (ctx) {
                     return AlertDialog(
-                      title: const Text('Confirm Logout'),
-                      content: const Text('Are you sure you want to logout?'),
+                      title: Text(loc.logoutConfirmTitle),
+                      content: Text(loc.logoutConfirmMessage),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.of(ctx).pop(false),
-                          child: const Text('Cancel'),
+                          child: Text(loc.cancel),
                         ),
                         TextButton(
                           onPressed: () => Navigator.of(ctx).pop(true),
-                          child: const Text('Logout'),
+                          child: Text(loc.confirmLogout),
                         ),
                       ],
                     );
@@ -369,7 +393,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       SizedBox(width: responsive.spacing(8)),
                       ResponsiveText(
-                        'Logout',
+                        loc.logout,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
@@ -484,6 +508,7 @@ class _ProfilePageState extends State<ProfilePage> {
       OrderController orderController,
       ResponsiveUtils responsive,
       int ordersCount,
+      AppLocalizations loc,
       ) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: responsive.spacing(40)),
@@ -500,7 +525,7 @@ class _ProfilePageState extends State<ProfilePage> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildStatItem(
-            'Orders',
+            loc.statOrders,
             '$ordersCount',
             responsive,
           ),
@@ -509,13 +534,13 @@ class _ProfilePageState extends State<ProfilePage> {
             width: 1,
             color: Colors.white.withOpacity(0.3),
           ),
-          _buildStatItem('Wishlist', '12', responsive),
+          _buildStatItem(loc.statWishlist, '12', responsive),
           Container(
             height: responsive.spacing(30),
             width: 1,
             color: Colors.white.withOpacity(0.3),
           ),
-          _buildStatItem('Reviews', '8', responsive),
+          _buildStatItem(loc.statReviews, '8', responsive),
         ],
       ),
     );
@@ -573,13 +598,84 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Future<void> _showLanguageSelector(LanguageProvider provider) async {
+    if (!mounted) return;
+
+    final loc = context.loc;
+    final selectedCode = provider.locale.languageCode;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 42,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  loc.languageSheetTitle,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  loc.languageSheetSubtitle,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF64748B),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ...provider.languages.map((option) {
+                  final label = loc.translate(option.labelKey);
+                  return RadioListTile<String>(
+                    value: option.locale.languageCode,
+                    groupValue: selectedCode,
+                    contentPadding: EdgeInsets.zero,
+                    onChanged: (value) async {
+                      if (value == null) return;
+                      await provider.updateLocale(option.locale);
+                      if (Navigator.of(sheetContext).canPop()) {
+                        Navigator.of(sheetContext).pop();
+                      }
+                    },
+                    title: Text(label),
+                  );
+                }).toList(),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildOption({
     required ResponsiveUtils responsive,
     required IconData icon,
     required String title,
     required String subtitle,
     required Color color,
-    required VoidCallback onTap,
+    VoidCallback? onTap,
     Widget? trailing,
   }) {
     final iconContainerSize = responsive.spacing(48);

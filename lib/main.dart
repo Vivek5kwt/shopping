@@ -31,6 +31,8 @@ import 'package:shop/data/services/storage_services.dart';
 import 'package:shop/features/screens/personalization/controllers/address_controller.dart';
 import 'package:shop/splash_screen.dart';
 import 'package:shop/utils/devices/devices_utils.dart';
+import 'package:shop/utils/localization/app_localizations.dart';
+import 'package:shop/utils/localization/language_provider.dart';
 import 'package:shop/utils/theme/theme.dart';
 import 'package:shop/utils/theme/theme_provider.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -107,16 +109,20 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => AnalyticsController()),
         ChangeNotifierProvider(create: (_) => AdminCustomerController()),
         ChangeNotifierProvider(create: (_) => FavoriteController()),
+        ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
-      child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, _) {
+      child: Consumer2<ThemeProvider, LanguageProvider>(
+        builder: (context, themeProvider, languageProvider, _) {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'B&W',
             themeMode: themeProvider.themeMode,
             theme: TAppTheme.lightTheme,
             darkTheme: TAppTheme.darkTheme,
+            locale: languageProvider.locale,
+            supportedLocales: languageProvider.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
             home: const AuthWrapper(),
             builder: EasyLoading.init(),
           );
