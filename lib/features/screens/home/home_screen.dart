@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:provider/provider.dart';
@@ -166,8 +167,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     // Badge count for notifications (sample)
     int notificationCount = 3;
+    final theme = Theme.of(context);
+    final bool isDark = theme.brightness == Brightness.dark;
+    final Color statusColor = theme.scaffoldBackgroundColor;
 
-    return Scaffold(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: statusColor,
+        statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+        statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+      ),
+      child: Scaffold(
       drawer: Drawer(
         child: SafeArea(
           child: Column(
@@ -493,6 +503,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 100),
           ],
         ),
+      ),
       ),
     );
   }

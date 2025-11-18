@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/custom_bottom_navbar.dart';
@@ -35,53 +36,64 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomeAppbar(
-        showbackArrow: true,
-        title: Text(
-          "Wishlist",
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        actions: [
-          CircleIconButton(
-            icon: Icons.add,
-            onPressed: () => Get.to(() => const MainWrapper(initialIndex: 0)),
-          ),
-        ],
+    final theme = Theme.of(context);
+    final bool isDark = theme.brightness == Brightness.dark;
+    final Color statusColor = theme.scaffoldBackgroundColor;
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: statusColor,
+        statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+        statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(TSizes.defaultSpace),
-        child: Column(
-          children: [
-            Consumer<FavoriteController>(
-              builder: (context, controller, child) {
-                final emptyAnimation = TAnimationLoaderWidget(
-                  text: "Whoops! WishList is Empty...",
-                  animation: TImages.pencilAnimations,
-                  showAction: true,
-                  actionText: 'Let\'s add some',
-                  onActionPressed: () =>
-                      Get.to(() => const MainWrapper(initialIndex: 0)),
-                );
-
-                const loader = VerticalProductShimmer();
-
-                if (controller.isLoading) {
-                  return loader;
-                }
-                if (controller.favoriteProducts.isEmpty) {
-                  return emptyAnimation;
-                } else {
-                  return GridLayout(
-                    itemCount: controller.favoriteProducts.length,
-                    itemBuilder: (_, index) => VerticalProductContainer(
-                      productModel: controller.favoriteProducts[index],
-                    ),
-                  );
-                }
-              },
+      child: Scaffold(
+        appBar: CustomeAppbar(
+          showbackArrow: true,
+          title: Text(
+            "Wishlist",
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          actions: [
+            CircleIconButton(
+              icon: Icons.add,
+              onPressed: () => Get.to(() => const MainWrapper(initialIndex: 0)),
             ),
           ],
+        ),
+        body: Padding(
+          padding: EdgeInsets.all(TSizes.defaultSpace),
+          child: Column(
+            children: [
+              Consumer<FavoriteController>(
+                builder: (context, controller, child) {
+                  final emptyAnimation = TAnimationLoaderWidget(
+                    text: "Whoops! WishList is Empty...",
+                    animation: TImages.pencilAnimations,
+                    showAction: true,
+                    actionText: 'Let\'s add some',
+                    onActionPressed: () =>
+                        Get.to(() => const MainWrapper(initialIndex: 0)),
+                  );
+
+                  const loader = VerticalProductShimmer();
+
+                  if (controller.isLoading) {
+                    return loader;
+                  }
+                  if (controller.favoriteProducts.isEmpty) {
+                    return emptyAnimation;
+                  } else {
+                    return GridLayout(
+                      itemCount: controller.favoriteProducts.length,
+                      itemBuilder: (_, index) => VerticalProductContainer(
+                        productModel: controller.favoriteProducts[index],
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
