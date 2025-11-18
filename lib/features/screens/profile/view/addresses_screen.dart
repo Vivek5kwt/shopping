@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shop/features/screens/personalization/view/add_new_address.dart';
 import 'package:shop/utils/localization/app_localizations.dart';
 import 'package:shop/utils/responsive/responsive.dart';
 
@@ -81,7 +82,13 @@ class AddressesScreen extends StatelessWidget {
             ),
             SizedBox(height: responsive.spacing(12)),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const AddNewAddress(),
+                  ),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: responsive.spacing(14)),
                 textStyle: theme.textTheme.titleMedium,
