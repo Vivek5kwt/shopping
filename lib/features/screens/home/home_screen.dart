@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     {
       'id': 1,
       'title': 'Classic White T-Shirt',
-      'image': 'assets/images/tshirt_white.png',
+      'image': 'assets/images/product_0.png',
       'isTshirt': true,
       'sold': true,
       'price': 19.99,
@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
     {
       'id': 2,
       'title': 'Black Logo Tee',
-      'image': 'assets/images/tshirt_black.png',
+      'image': 'assets/images/product_1.png',
       'isTshirt': true,
       'sold': true,
       'price': 24.99,
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
     {
       'id': 3,
       'title': 'Blue V-Neck T-Shirt',
-      'image': 'assets/images/tshirt_blue.png',
+      'image': 'assets/images/product_2.png',
       'isTshirt': true,
       'sold': false,
       'price': 21.50,
@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
     {
       'id': 4,
       'title': 'Graphic Tee (Limited)',
-      'image': 'assets/images/tshirt_graphic.png',
+      'image': 'assets/images/product_3.png',
       'isTshirt': true,
       'sold': true,
       'price': 29.99,
