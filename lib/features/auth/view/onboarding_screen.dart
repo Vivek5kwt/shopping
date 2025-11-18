@@ -314,9 +314,10 @@ class _BottomActionButton extends StatelessWidget {
             ),
             child: isLastPage
                 ? Row(
+                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
+                      Flexible(
                         child: Text(
                           label,
                           maxLines: 1,
