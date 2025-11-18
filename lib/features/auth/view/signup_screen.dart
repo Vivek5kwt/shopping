@@ -10,6 +10,7 @@ import 'package:shop/features/auth/widgets/divider.dart';
 import 'package:shop/features/auth/widgets/input_fields.dart';
 import 'package:shop/features/auth/widgets/social_auth.dart';
 import 'package:shop/responsive/responsiveness.dart';
+import 'package:shop/utils/localization/app_localizations.dart';
 import 'package:shop/utils/validators/validators.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -22,6 +23,7 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
+    final loc = context.loc;
     return ChangeNotifierProvider(
       create: (_) => SignupController(),
       child: Consumer<SignupController>(
@@ -76,21 +78,22 @@ class _SignupScreenState extends State<SignupScreen> {
 
                         // Back Button
                         IconButton(
-                          onPressed: () => Get.offAll(() => const LoginScreen()),
+                          onPressed: () =>
+                              Get.offAll(() => const LoginScreen()),
                           icon: const Icon(
                             Icons.arrow_back,
                             color: Colors.black87, // App theme color
                             size: 28,
                           ),
-                          tooltip: 'Back to Sign In',
+                          tooltip: loc.authBackToSignIn,
                         ),
 
                         const SizedBox(height: 10),
 
                         // Header
-                        const AuthHeader(
-                          title: 'Create Account',
-                          subtitle: 'Sign up to get started with B&W',
+                        AuthHeader(
+                          title: loc.authSignupTitle,
+                          subtitle: loc.authSignupSubtitle,
                         ),
                         const SizedBox(height: 40),
 
@@ -101,8 +104,8 @@ class _SignupScreenState extends State<SignupScreen> {
                             children: [
                               CustomTextField(
                                 controller: controller.nameController,
-                                label: 'Full Name',
-                                hint: 'Enter your full name',
+                                label: loc.authFullNameLabel,
+                                hint: loc.authFullNameHint,
                                 keyboardType: TextInputType.name,
                                 validator: (value) =>
                                     TValidator.validateEmptyText("Name", value),
@@ -111,8 +114,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
                               CustomTextField(
                                 controller: controller.emailController,
-                                label: 'Email',
-                                hint: 'Enter your email address',
+                                label: loc.authEmailLabel,
+                                hint: loc.authEmailHint,
                                 keyboardType: TextInputType.emailAddress,
                                 validator: (value) =>
                                     TValidator.validateEmail(value),
@@ -121,8 +124,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
                               CustomTextField(
                                 controller: controller.passwordController,
-                                label: 'Password',
-                                hint: 'Enter your password',
+                                label: loc.authPasswordLabel,
+                                hint: loc.authPasswordHint,
                                 isPassword: true,
                                 isPasswordVisible: controller.obscurePassword,
                                 onTogglePassword: () =>
@@ -134,14 +137,14 @@ class _SignupScreenState extends State<SignupScreen> {
 
                               // Sign Up Button
                               CustomButton(
-                                text: 'Sign Up',
+                                text: loc.authSignUpButton,
                                 isLoading: controller.isLoading,
                                 onPressed: () => controller.signUp(context),
                               ),
                               const SizedBox(height: 24),
 
                               // Divider
-                              const AuthDivider(text: 'or continue with'),
+                              AuthDivider(text: loc.authOrContinue),
                               const SizedBox(height: 24),
 
                               // Social Auth Buttons
@@ -150,8 +153,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
                               // Login Link
                               AuthFooter(
-                                question: 'Already have an account?',
-                                actionText: 'Sign In',
+                                question: loc.authSignupFooterQuestion,
+                                actionText: loc.authFooterSignIn,
                                 onActionTap: () =>
                                     Get.offAll(() => const LoginScreen()),
                               ),

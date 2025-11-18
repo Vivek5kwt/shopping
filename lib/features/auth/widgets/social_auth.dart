@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:shop/utils/localization/app_localizations.dart';
+
 import '../../../utils/loaders/snackbar.dart';
 import '../controller/login_controller/login_controller.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -13,6 +15,7 @@ class SocialButton extends StatelessWidget {
   Widget build(BuildContext context) {
     // Use Provider to get the LoginController instance and its state
     final controller = Provider.of<LoginController>(context);
+    final loc = context.loc;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -50,7 +53,11 @@ class SocialButton extends StatelessWidget {
               // Prefer platform check before calling
               final isAvailable = await SignInWithApple.isAvailable();
               if (!isAvailable) {
-                CustomSnackbars.showError(context, 'Apple Sign-In', 'Apple Sign-In is not available on this device.');
+                CustomSnackbars.showError(
+                  context,
+                  loc.authSocialAppleTitle,
+                  loc.authSocialAppleMessage,
+                );
                 return;
               }
               controller.signInWithApple(context);

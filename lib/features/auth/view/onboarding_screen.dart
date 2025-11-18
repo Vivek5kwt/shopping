@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shop/utils/localization/app_localizations.dart';
 
 import 'login_screen.dart';
 
@@ -14,33 +15,10 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentIndex = 0;
-
-  final List<_OnboardingPageData> _pages = const [
-    _OnboardingPageData(
-      title: 'Shop Trending\nDesigns',
-      description: 'Design and personalize your T-shirts\nwith just a few taps.',
-      buttonLabel: 'Next',
-      isPrimaryAction: false,
-      illustration: _TrendingDesignIllustration(),
-    ),
-    _OnboardingPageData(
-      title: 'Fast Delivery\n& Easy Returns',
-      description: 'Design and personalize your T-shirts\nwith just a few taps.',
-      buttonLabel: 'Next',
-      isPrimaryAction: false,
-      illustration: _FastDeliveryIllustration(),
-    ),
-    _OnboardingPageData(
-      title: 'Create Your Own\nStyle',
-      description: 'Design and personalize your T-shirts\nwith just a few taps.',
-      buttonLabel: 'Get Started',
-      isPrimaryAction: true,
-      illustration: _CreateStyleIllustration(),
-    ),
-  ];
+  static const int _pageCount = 3;
 
   void _goToNextPage() {
-    if (_currentIndex < _pages.length - 1) {
+    if (_currentIndex < _pageCount - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeOut,
@@ -87,99 +65,130 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    AnimatedOpacity(
-                      duration: const Duration(milliseconds: 300),
-                      opacity: _currentIndex > 0 ? 1 : 0,
-                      child: _currentIndex > 0
-                          ? IconButton(
-                              onPressed: () {
-                                if (_currentIndex > 0) {
-                                  _pageController.previousPage(
-                                    duration: const Duration(milliseconds: 400),
-                                    curve: Curves.easeOut,
-                                  );
-                                }
-                              },
-                              icon: const Icon(
-                                Icons.arrow_back_ios_new,
-                                color: Colors.black,
-                                size: 20,
-                              ),
-                            )
-                          : const SizedBox(width: 48),
-                    ),
-                    TextButton(
-                      onPressed: () => _completeOnboarding(),
-                      child: Text(
-                        _currentIndex == _pages.length - 1 ? 'Done' : 'Skip',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
+              Builder(
+                builder: (context) {
+                  final loc = context.loc;
+                  final pages = _buildPages(loc);
+                  final isLastPage = _currentIndex == pages.length - 1;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AnimatedOpacity(
+                          duration: const Duration(milliseconds: 300),
+                          opacity: _currentIndex > 0 ? 1 : 0,
+                          child: _currentIndex > 0
+                              ? IconButton(
+                                  onPressed: () {
+                                    if (_currentIndex > 0) {
+                                      _pageController.previousPage(
+                                        duration:
+                                            const Duration(milliseconds: 400),
+                                        curve: Curves.easeOut,
+                                      );
+                                    }
+                                  },
+                                  icon: const Icon(
+                                    Icons.arrow_back_ios_new,
+                                    color: Colors.black,
+                                    size: 20,
+                                  ),
+                                )
+                              : const SizedBox(width: 48),
                         ),
-                      ),
+                        TextButton(
+                          onPressed: () => _completeOnboarding(),
+                          child: Text(
+                            isLastPage ? loc.onboardingDone : loc.onboardingSkip,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
+              const SizedBox(height: 16),
               Expanded(
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: _pages.length,
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                  },
-                  itemBuilder: (context, index) {
-                    final page = _pages[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          page.illustration,
-                          const SizedBox(height: 32),
-                          Text(
-                            page.title,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.black,
-                                ),
+                child: Builder(
+                  builder: (context) {
+                    final loc = context.loc;
+                    final pages = _buildPages(loc);
+                    return PageView.builder(
+                      controller: _pageController,
+                      itemCount: pages.length,
+                      onPageChanged: (index) {
+                        setState(() {
+                          _currentIndex = index;
+                        });
+                      },
+                      itemBuilder: (context, index) {
+                        final page = pages[index];
+                        return Padding(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 32.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              page.illustration,
+                              const SizedBox(height: 32),
+                              Text(
+                                page.title,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black,
+                                        ) ??
+                                    const TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                    ),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                page.description,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: Colors.black54,
+                                        ) ??
+                                    const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black54,
+                                    ),
+                              ),
+                              const Spacer(),
+                              _OnboardingActionButton(
+                                label: page.buttonLabel,
+                                isPrimary: page.isPrimaryAction,
+                                onPressed: () {
+                                  if (page.isPrimaryAction) {
+                                    _completeOnboarding();
+                                  } else {
+                                    _goToNextPage();
+                                  }
+                                },
+                              ),
+                              const SizedBox(height: 24),
+                              _PageIndicator(
+                                length: pages.length,
+                                currentIndex: _currentIndex,
+                              ),
+                              const SizedBox(height: 8),
+                            ],
                           ),
-                          const SizedBox(height: 16),
-                          Text(
-                            page.description,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Colors.black54,
-                                ),
-                          ),
-                          const Spacer(),
-                          _OnboardingActionButton(
-                            label: page.buttonLabel,
-                            isPrimary: page.isPrimaryAction,
-                            onPressed: () {
-                              if (page.isPrimaryAction) {
-                                _completeOnboarding();
-                              } else {
-                                _goToNextPage();
-                              }
-                            },
-                          ),
-                          const SizedBox(height: 24),
-                          _PageIndicator(
-                            length: _pages.length,
-                            currentIndex: _currentIndex,
-                          ),
-                          const SizedBox(height: 8),
-                        ],
-                      ),
+                        );
+                      },
                     );
                   },
                 ),
@@ -189,6 +198,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         ),
       ),
     );
+  }
+
+  List<_OnboardingPageData> _buildPages(AppLocalizations loc) {
+    return [
+      _OnboardingPageData(
+        title: loc.onboardingPage1Title,
+        description: loc.onboardingPage1Description,
+        buttonLabel: loc.onboardingNext,
+        isPrimaryAction: false,
+        illustration: const _TrendingDesignIllustration(),
+      ),
+      _OnboardingPageData(
+        title: loc.onboardingPage2Title,
+        description: loc.onboardingPage2Description,
+        buttonLabel: loc.onboardingNext,
+        isPrimaryAction: false,
+        illustration: const _FastDeliveryIllustration(),
+      ),
+      _OnboardingPageData(
+        title: loc.onboardingPage3Title,
+        description: loc.onboardingPage3Description,
+        buttonLabel: loc.onboardingGetStarted,
+        isPrimaryAction: true,
+        illustration: const _CreateStyleIllustration(),
+      ),
+    ];
   }
 }
 

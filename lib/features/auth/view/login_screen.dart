@@ -11,6 +11,7 @@ import 'package:shop/features/auth/widgets/divider.dart';
 import 'package:shop/features/auth/widgets/input_fields.dart';
 import 'package:shop/features/auth/widgets/social_auth.dart';
 import 'package:shop/responsive/responsiveness.dart';
+import 'package:shop/utils/localization/app_localizations.dart';
 import 'package:shop/utils/validators/validators.dart';
 
 import '../../../custom_bottom_navbar.dart';
@@ -28,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
+        final loc = context.loc;
         return Consumer<LoginController>(
           builder: (context, controller, child) {
             return Scaffold(
@@ -81,9 +83,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 60),
 
                           // Header
-                          const AuthHeader(
-                            title: 'Welcome Back',
-                            subtitle: 'Sign in to continue to B&W',
+                          AuthHeader(
+                            title: loc.authLoginTitle,
+                            subtitle: loc.authLoginSubtitle,
                           ),
                           const SizedBox(height: 40),
 
@@ -94,8 +96,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: [
                                 CustomTextField(
                                   controller: controller.emailController,
-                                  label: 'Email',
-                                  hint: 'Enter your email address',
+                                  label: loc.authEmailLabel,
+                                  hint: loc.authEmailHint,
                                   keyboardType: TextInputType.emailAddress,
                                   validator: (value) =>
                                       TValidator.validateEmail(value),
@@ -103,8 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 const SizedBox(height: 20),
                                 CustomTextField(
                                   controller: controller.passwordController,
-                                  label: 'Password',
-                                  hint: 'Enter your password',
+                                  label: loc.authPasswordLabel,
+                                  hint: loc.authPasswordHint,
                                   isPassword: true,
                                   isPasswordVisible:
                                   controller.obscurePassword,
@@ -124,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               () => const ForgetPasswordScreen());
                                     },
                                     child: Text(
-                                      'Forgot Password?',
+                                      loc.authForgotPassword,
                                       style: TextStyle(
                                         fontSize:
                                         ResponsiveBreakpoint.isMobile(
@@ -141,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                 // Sign In Button
                                 CustomButton(
-                                  text: 'Sign In',
+                                  text: loc.authSignInButton,
                                   isLoading: controller.isLoading,
                                   //onPressed: () => controller.login(context),
                                   onPressed: () {
@@ -151,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 const SizedBox(height: 24),
 
                                 // Divider
-                                const AuthDivider(text: 'or continue with'),
+                                AuthDivider(text: loc.authOrContinue),
                                 const SizedBox(height: 24),
 
                                 // Social Auth Buttons (uses the controller for state & actions)
@@ -160,8 +162,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                 // Signup Link
                                 AuthFooter(
-                                  question: "Don't have an account?",
-                                  actionText: 'Sign Up',
+                                  question: loc.authLoginFooterQuestion,
+                                  actionText: loc.authFooterSignUp,
                                   onActionTap: () =>
                                       Get.offAll(() => const SignupScreen()),
                                 ),

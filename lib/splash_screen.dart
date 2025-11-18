@@ -8,6 +8,7 @@ import 'package:shop/features/auth/view/login_screen.dart';
 import 'package:shop/features/auth/view/onboarding_screen.dart';
 import 'package:shop/data/services/storage_services.dart';
 import 'package:shop/utils/enums/auth_enums.dart';
+import 'package:shop/utils/localization/app_localizations.dart';
 
 class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
@@ -157,10 +158,10 @@ class AppSplashView extends StatelessWidget {
                     const Spacer(),
                     _LogoCard(),
                     const SizedBox(height: 32),
-                    const Text(
-                      'Curated looks, effortless style.',
+                    Text(
+                      context.loc.splashTagline,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18,
                         color: Colors.white70,
                         letterSpacing: 0.8,
