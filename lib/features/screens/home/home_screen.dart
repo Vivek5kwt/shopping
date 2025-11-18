@@ -169,7 +169,8 @@ class _HomeScreenState extends State<HomeScreen> {
     int notificationCount = 3;
     final theme = Theme.of(context);
     final bool isDark = theme.brightness == Brightness.dark;
-    final Color statusColor = theme.scaffoldBackgroundColor;
+    const lightBackground = Color(0xFFF8F8FF);
+    final Color statusColor = isDark ? theme.scaffoldBackgroundColor : lightBackground;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
@@ -178,109 +179,111 @@ class _HomeScreenState extends State<HomeScreen> {
         statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
       ),
       child: Scaffold(
-      drawer: Drawer(
-        child: SafeArea(
-          child: Column(
-            children: [
-              DrawerHeader(
-                margin: EdgeInsets.zero,
-                child: Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 28,
-                      backgroundColor: Colors.black12,
-                      child: Icon(Iconsax.shop, size: 28),
-                    ),
-                    const SizedBox(width: defaultPadding / 2),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text('Welcome!', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          SizedBox(height: 4),
-                          Text('Your personalized store', style: TextStyle(color: Colors.black54)),
-                        ],
+        backgroundColor: statusColor,
+        drawer: Drawer(
+          child: SafeArea(
+            child: Column(
+              children: [
+                DrawerHeader(
+                  margin: EdgeInsets.zero,
+                  child: Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 28,
+                        backgroundColor: Colors.black12,
+                        child: Icon(Iconsax.shop, size: 28),
                       ),
-                    )
-                  ],
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.history),
-                title: const Text('Recent View'),
-                onTap: () {
-                  Navigator.of(context).maybePop();
-                  // Scroll to recent section
-                  Future.microtask(() => _scrollToKey(_recentKey));
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.trending_up),
-                title: const Text('Trending (T-shirts)'),
-                onTap: () {
-                  Navigator.of(context).maybePop();
-                  Future.microtask(() => _scrollToKey(_trendingKey));
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.checkroom),
-                title: const Text('Sold T-Shirts'),
-                onTap: () {
-                  Navigator.of(context).maybePop();
-                  Future.microtask(() => _scrollToKey(_trendingKey));
-                },
-              ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.notifications),
-                title: const Text('Notifications'),
-                trailing: notificationCount > 0
-                    ? CircleAvatar(
-                        radius: 12,
-                        backgroundColor: Colors.red,
-                        child: Text(
-                          '$notificationCount',
-                          style: const TextStyle(color: Colors.white, fontSize: 12),
+                      const SizedBox(width: defaultPadding / 2),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text('Welcome!', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            SizedBox(height: 4),
+                            Text('Your personalized store', style: TextStyle(color: Colors.black54)),
+                          ],
                         ),
                       )
-                    : null,
-                onTap: () {
-                  Navigator.of(context).maybePop();
-                  showDialog(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: const Text('Notifications'),
-                      content: const Text('You have new notifications.'),
-                      actions: [
-                        TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Close')),
-                      ],
-                    ),
-                  );
-                },
-              ),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(defaultPadding),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          // Example action
-                          Navigator.of(context).maybePop();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('View all orders tapped')),
-                          );
-                        },
-                        icon: const Icon(Icons.receipt_long),
-                        label: const Text('My Orders'),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                ListTile(
+                  leading: const Icon(Icons.history),
+                  title: const Text('Recent View'),
+                  onTap: () {
+                    Navigator.of(context).maybePop();
+                    // Scroll to recent section
+                    Future.microtask(() => _scrollToKey(_recentKey));
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.trending_up),
+                  title: const Text('Trending (T-shirts)'),
+                  onTap: () {
+                    Navigator.of(context).maybePop();
+                    Future.microtask(() => _scrollToKey(_trendingKey));
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.checkroom),
+                  title: const Text('Sold T-Shirts'),
+                  onTap: () {
+                    Navigator.of(context).maybePop();
+                    Future.microtask(() => _scrollToKey(_trendingKey));
+                  },
+                ),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(Icons.notifications),
+                  title: const Text('Notifications'),
+                  trailing: notificationCount > 0
+                      ? CircleAvatar(
+                          radius: 12,
+                          backgroundColor: Colors.red,
+                          child: Text(
+                            '$notificationCount',
+                            style: const TextStyle(color: Colors.white, fontSize: 12),
+                          ),
+                        )
+                      : null,
+                  onTap: () {
+                    Navigator.of(context).maybePop();
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: const Text('Notifications'),
+                        content: const Text('You have new notifications.'),
+                        actions: [
+                          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Close')),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            // Example action
+                            Navigator.of(context).maybePop();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('View all orders tapped')),
+                            );
+                          },
+                          icon: const Icon(Icons.receipt_long),
+                          label: const Text('My Orders'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
