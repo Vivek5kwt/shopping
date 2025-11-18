@@ -113,44 +113,191 @@ class AppSplashView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF7C4DFF),
-      body: Stack(
-        children: [
-          // Decorative bottom bubble
-          Positioned(
-            bottom: -120,
-            right: -80,
-            child: Container(
-              height: 260,
-              width: 260,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
+      backgroundColor: Colors.black,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF120A2A),
+              Color(0xFF342266),
+              Color(0xFF5E2DB6),
+            ],
+          ),
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: -80,
+              left: -60,
+              child: _BlurredCircle(
+                size: 220,
+                color: Colors.white.withOpacity(0.12),
               ),
             ),
-          ),
-          // Logo and title
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/images/splash_logo.png',
-                  width: 140,
-                  height: 140,
-                  fit: BoxFit.contain,
+            Positioned(
+              bottom: -120,
+              right: -80,
+              child: _BlurredCircle(
+                size: 320,
+                color: const Color(0xFF8A6CFF).withOpacity(0.25),
+              ),
+            ),
+            Positioned(
+              top: 120,
+              right: 40,
+              child: _AccentBadge(),
+            ),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Column(
+                  children: [
+                    const Spacer(),
+                    _LogoCard(),
+                    const SizedBox(height: 32),
+                    const Text(
+                      'Curated looks, effortless style.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white70,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                    const SizedBox(height: 48),
+                    const SizedBox(
+                      height: 48,
+                      width: 48,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3.5,
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Colors.white70),
+                      ),
+                    ),
+                    const Spacer(),
+                    const SizedBox(height: 24),
+                  ],
                 ),
-                const SizedBox(height: 24),
-                const Text(
-                  'B&W',
-                  style: TextStyle(
-                    fontSize: 46,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    letterSpacing: 1.5,
-                  ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _BlurredCircle extends StatelessWidget {
+  const _BlurredCircle({
+    required this.size,
+    required this.color,
+  });
+
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: size,
+      width: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+        boxShadow: [
+          BoxShadow(
+            color: color,
+            blurRadius: size * 0.45,
+            spreadRadius: size * 0.15,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LogoCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(32),
+        color: Colors.white.withOpacity(0.06),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.2),
+          width: 1.2,
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 120,
+            width: 120,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
                 ),
               ],
+            ),
+            padding: const EdgeInsets.all(18),
+            child: Image.asset(
+              'assets/images/splash_logo.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Text(
+            'B&W',
+            style: TextStyle(
+              fontSize: 42,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+              letterSpacing: 2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AccentBadge extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.35),
+          width: 1.2,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Icon(
+            Icons.auto_awesome,
+            color: Colors.white,
+            size: 18,
+          ),
+          SizedBox(width: 8),
+          Text(
+            'Premium Fashion',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.6,
             ),
           ),
         ],
