@@ -286,227 +286,228 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-      ),
-      appBar: AppBar(
-        leading: Builder(builder: (context) {
-          return IconButton(
-            onPressed: () {
-              // Open drawer reliably
-              Scaffold.of(context).openDrawer();
-            },
-            icon: SvgPicture.asset("assets/icons/menu.svg"),
-          );
-        }),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset("assets/icons/Location.svg"),
-            const SizedBox(width: defaultPadding / 2),
-            Text(
-              "15/2 New Texas",
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ],
-        ),
-        actions: [
-          // Notification icon with badge
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.notifications_none, color: Colors.grey),
+        appBar: AppBar(
+          leading: Builder(
+            builder: (context) {
+              return IconButton(
                 onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: const Text('Notifications'),
-                      content: const Text('You have some recent updates.'),
-                      actions: [
-                        TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Close')),
-                      ],
-                    ),
-                  );
+                  // Open drawer reliably
+                  Scaffold.of(context).openDrawer();
                 },
-              ),
-              if (notificationCount > 0)
-                Positioned(
-                  right: 8,
-                  top: 8,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      '$notificationCount',
-                      style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          Consumer<AuthProvider>(
-            builder: (context, controller, child) {
-              // Safely get cart count
-              final cartCount = controller.user?.cart.length ?? 0;
-
-              debugPrint("Cart count in home page: $cartCount");
-
-              return Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  IconButton(
-                    icon: const Icon(Iconsax.shopping_bag, color: Colors.grey),
-                    onPressed: () {},
-                  ),
-                  if (cartCount > 0)
-                    Positioned(
-                      right: 8,
-                      top: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        constraints: const BoxConstraints(
-                          minWidth: 20,
-                          minHeight: 20,
-                        ),
-                        decoration: const BoxDecoration(
-                          color: Colors.black,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Text(
-                            "$cartCount",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
+                icon: SvgPicture.asset("assets/icons/menu.svg"),
               );
             },
           ),
-          const SizedBox(width: 10),
-        ],
-      ),
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-        padding: const EdgeInsets.all(defaultPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Explore",
-              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
-                  ),
-            ),
-            const Text(
-              "Handpicked For Your Vibe",
-              style: TextStyle(fontSize: 18),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: defaultPadding),
-              child: SearchForm(),
-            ),
-            const Categories(),
-            const SizedBox(height: defaultPadding),
-
-            // Recent Views section: only sold T-shirts
-            Container(
-              key: _recentKey,
-              padding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Recent Views', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-                      TextButton(
-                        onPressed: () {
-                          // scroll to trending as a quick action
-                          _scrollToKey(_trendingKey);
-                        },
-                        child: const Text('See all'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: defaultPadding / 2),
-                  SizedBox(
-                    height: 190,
-                    child: _soldTshirts.isNotEmpty
-                        ? ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: _soldTshirts.length,
-                            itemBuilder: (context, index) {
-                              return _buildProductCard(_soldTshirts[index]);
-                            },
-                          )
-                        : const Center(child: Text('No recently viewed T-shirts')),
-                  ),
-                ],
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset("assets/icons/Location.svg"),
+              const SizedBox(width: defaultPadding / 2),
+              Text(
+                "15/2 New Texas",
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
-            ),
-
-            const SizedBox(height: defaultPadding),
-
-            // Trending section: only sold T-shirts (as requested)
-            Container(
-              key: _trendingKey,
-              padding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Trending', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-                      TextButton(
-                        onPressed: () {
-                          // maybe open a page with all trending
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Open full Trending list')),
-                          );
-                        },
-                        child: const Text('See all'),
+            ],
+          ),
+          actions: [
+            // Notification icon with badge
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.notifications_none, color: Colors.grey),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: const Text('Notifications'),
+                        content: const Text('You have some recent updates.'),
+                        actions: [
+                          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Close')),
+                        ],
                       ),
-                    ],
+                    );
+                  },
+                ),
+                if (notificationCount > 0)
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        '$notificationCount',
+                        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: defaultPadding / 2),
-                  SizedBox(
-                    height: 190,
-                    child: _soldTshirts.isNotEmpty
-                        ? ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: _soldTshirts.length,
-                            itemBuilder: (context, index) {
-                              return _buildProductCard(_soldTshirts[index]);
-                            },
-                          )
-                        : const Center(child: Text('No trending T-shirts')),
-                  ),
-                ],
-              ),
+              ],
             ),
+            Consumer<AuthProvider>(
+              builder: (context, controller, child) {
+                // Safely get cart count
+                final cartCount = controller.user?.cart.length ?? 0;
 
-            // New arrivals (kept as before)
-            const SizedBox(height: defaultPadding),
-            const NewArrivalProducts(),
+                debugPrint("Cart count in home page: $cartCount");
 
-            const SizedBox(height: 100),
+                return Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Iconsax.shopping_bag, color: Colors.grey),
+                      onPressed: () {},
+                    ),
+                    if (cartCount > 0)
+                      Positioned(
+                        right: 8,
+                        top: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          constraints: const BoxConstraints(
+                            minWidth: 20,
+                            minHeight: 20,
+                          ),
+                          decoration: const BoxDecoration(
+                            color: Colors.black,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              "$cartCount",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(width: 10),
           ],
         ),
-      ),
+        body: SingleChildScrollView(
+          controller: _scrollController,
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          padding: const EdgeInsets.all(defaultPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Explore",
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+              ),
+              const Text(
+                "Handpicked For Your Vibe",
+                style: TextStyle(fontSize: 18),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: defaultPadding),
+                child: SearchForm(),
+              ),
+              const Categories(),
+              const SizedBox(height: defaultPadding),
+
+              // Recent Views section: only sold T-shirts
+              Container(
+                key: _recentKey,
+                padding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Recent Views', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                        TextButton(
+                          onPressed: () {
+                            // scroll to trending as a quick action
+                            _scrollToKey(_trendingKey);
+                          },
+                          child: const Text('See all'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: defaultPadding / 2),
+                    SizedBox(
+                      height: 190,
+                      child: _soldTshirts.isNotEmpty
+                          ? ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: _soldTshirts.length,
+                              itemBuilder: (context, index) {
+                                return _buildProductCard(_soldTshirts[index]);
+                              },
+                            )
+                          : const Center(child: Text('No recently viewed T-shirts')),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: defaultPadding),
+
+              // Trending section: only sold T-shirts (as requested)
+              Container(
+                key: _trendingKey,
+                padding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Trending', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                        TextButton(
+                          onPressed: () {
+                            // maybe open a page with all trending
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Open full Trending list')),
+                            );
+                          },
+                          child: const Text('See all'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: defaultPadding / 2),
+                    SizedBox(
+                      height: 190,
+                      child: _soldTshirts.isNotEmpty
+                          ? ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: _soldTshirts.length,
+                              itemBuilder: (context, index) {
+                                return _buildProductCard(_soldTshirts[index]);
+                              },
+                            )
+                          : const Center(child: Text('No trending T-shirts')),
+                    ),
+                  ],
+                ),
+              ),
+
+              // New arrivals (kept as before)
+              const SizedBox(height: defaultPadding),
+              const NewArrivalProducts(),
+
+              const SizedBox(height: 100),
+            ],
+          ),
+        ),
       ),
     );
   }
