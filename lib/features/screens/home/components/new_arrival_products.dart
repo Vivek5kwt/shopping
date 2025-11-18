@@ -38,7 +38,7 @@ class _NewArrivalProductsState extends State<NewArrivalProducts> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: defaultPadding),
               child: SectionTitle(
-                title: "New Arrival",
+                title: "New T-Shirt Drops",
                 pressSeeAll: () => Get.to(() => AllProductScreen()),
               ),
             ),
