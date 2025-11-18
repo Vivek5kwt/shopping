@@ -57,14 +57,8 @@ dependencies:
   firebase_core: ^4.2.0
   firebase_auth: ^6.1.1
   cloud_firestore: ^6.0.3
-  google_sign_in: ^6.1.6
+  google_sign_in: ^7.0.1
   sign_in_with_apple: ^7.0.1
-
-dependency_overrides:
-  # google_sign_in_android 6.1.16 still references the old v1 registrar APIs,
-  # which are no longer available in Flutter 3.27+. Pin to the latest patch
-  # release that has removed those references so the Android build succeeds.
-  google_sign_in_android: ^6.1.18
 
 dev_dependencies:
   flutter_test:
