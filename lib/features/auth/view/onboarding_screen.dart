@@ -168,27 +168,45 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     ),
                               ),
                               const Spacer(),
-                              _OnboardingActionButton(
-                                label: page.buttonLabel,
-                                isPrimary: page.isPrimaryAction,
-                                onPressed: () {
-                                  if (page.isPrimaryAction) {
-                                    _completeOnboarding();
-                                  } else {
-                                    _goToNextPage();
-                                  }
-                                },
-                              ),
-                              const SizedBox(height: 24),
-                              _PageIndicator(
-                                length: pages.length,
-                                currentIndex: _currentIndex,
-                              ),
-                              const SizedBox(height: 8),
                             ],
                           ),
                         );
                       },
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
+                child: Builder(
+                  builder: (context) {
+                    final loc = context.loc;
+                    final pages = _buildPages(loc);
+                    final isLastPage = _currentIndex == pages.length - 1;
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: 56,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: _PageIndicator(
+                                length: pages.length,
+                                currentIndex: _currentIndex,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        _BottomActionButton(
+                          label: isLastPage
+                              ? loc.onboardingGetStarted
+                              : loc.onboardingNext,
+                          isLastPage: isLastPage,
+                          onPressed:
+                              isLastPage ? _completeOnboarding : _goToNextPage,
+                        ),
+                      ],
                     );
                   },
                 ),
@@ -205,22 +223,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       _OnboardingPageData(
         title: loc.onboardingPage1Title,
         description: loc.onboardingPage1Description,
-        buttonLabel: loc.onboardingNext,
-        isPrimaryAction: false,
         illustration: const _TrendingDesignIllustration(),
       ),
       _OnboardingPageData(
         title: loc.onboardingPage2Title,
         description: loc.onboardingPage2Description,
-        buttonLabel: loc.onboardingNext,
-        isPrimaryAction: false,
         illustration: const _FastDeliveryIllustration(),
       ),
       _OnboardingPageData(
         title: loc.onboardingPage3Title,
         description: loc.onboardingPage3Description,
-        buttonLabel: loc.onboardingGetStarted,
-        isPrimaryAction: true,
         illustration: const _CreateStyleIllustration(),
       ),
     ];
@@ -230,15 +242,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 class _OnboardingPageData {
   final String title;
   final String description;
-  final String buttonLabel;
-  final bool isPrimaryAction;
   final Widget illustration;
 
   const _OnboardingPageData({
     required this.title,
     required this.description,
-    required this.buttonLabel,
-    required this.isPrimaryAction,
     required this.illustration,
   });
 }
@@ -273,57 +281,66 @@ class _PageIndicator extends StatelessWidget {
   }
 }
 
-class _OnboardingActionButton extends StatelessWidget {
-  const _OnboardingActionButton({
+class _BottomActionButton extends StatelessWidget {
+  const _BottomActionButton({
     required this.label,
-    required this.isPrimary,
+    required this.isLastPage,
     required this.onPressed,
   });
 
   final String label;
-  final bool isPrimary;
+  final bool isLastPage;
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isPrimary ? Colors.black : Colors.white,
-          foregroundColor: isPrimary ? Colors.white : Colors.black,
-          padding: const EdgeInsets.symmetric(vertical: 18),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOut,
+      height: 56,
+      width: isLastPage ? 180 : 56,
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(56),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(56),
+          onTap: onPressed,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: isLastPage ? 24 : 0,
+            ),
+            child: isLastPage
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          label,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Icon(
+                        Icons.arrow_forward,
+                        color: Colors.white,
+                        size: 22,
+                      ),
+                    ],
+                  )
+                : const Icon(
+                    Icons.arrow_forward,
+                    color: Colors.white,
+                    size: 22,
+                  ),
           ),
-          elevation: isPrimary ? 4 : 1,
-        ),
-        onPressed: onPressed,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Container(
-              height: 36,
-              width: 36,
-              decoration: BoxDecoration(
-                color: isPrimary ? Colors.white : Colors.black,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.arrow_forward,
-                size: 18,
-                color: isPrimary ? Colors.black : Colors.white,
-              ),
-            ),
-          ],
         ),
       ),
     );
