@@ -26,9 +26,8 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
-  late String currentImage;
-  late int selectedImageIndex;
-  int selectedColorIndex = 1; // Add this for color selection tracking
+  late final ValueNotifier<int> _selectedImageNotifier;
+  late final ValueNotifier<int> _selectedColorNotifier;
 
   // Define available colors
   final List<Color> availableColors = const [
@@ -39,19 +38,23 @@ class _DetailsScreenState extends State<DetailsScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize the current image and selected index
-    currentImage = widget.product.images.isNotEmpty
-        ? widget.product.images[0]
-        : '';
-    selectedImageIndex = 0;
+    _selectedImageNotifier = ValueNotifier(0);
+    final defaultColorIndex = availableColors.length > 1 ? 1 : 0;
+    _selectedColorNotifier = ValueNotifier(defaultColorIndex);
+  }
+
+  @override
+  void dispose() {
+    _selectedImageNotifier.dispose();
+    _selectedColorNotifier.dispose();
+    super.dispose();
   }
 
   bool _isNetworkImage(String imagePath) {
     return imagePath.startsWith('http');
   }
 
-  Widget _buildPrimaryImage(BuildContext context) {
-    final image = currentImage;
+  Widget _buildPrimaryImage(BuildContext context, String image) {
     if (image.isEmpty) {
       return const Icon(Icons.error_outline, size: 64, color: Colors.grey);
     }
@@ -143,7 +146,18 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         child: Center(
                           child: SizedBox(
                             height: MediaQuery.of(context).size.height * 0.4,
-                            child: _buildPrimaryImage(context),
+                            child: ValueListenableBuilder<int>(
+                              valueListenable: _selectedImageNotifier,
+                              builder: (context, index, _) {
+                                final images = widget.product.images;
+                                final image = (images.isNotEmpty &&
+                                        index >= 0 &&
+                                        index < images.length)
+                                    ? images[index]
+                                    : '';
+                                return _buildPrimaryImage(context, image);
+                              },
+                            ),
                           ),
                         ),
                       ),
@@ -155,43 +169,42 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       left: TSizes.defaultSpace,
                       child: SizedBox(
                         height: 80,
-                        child: ListView.separated(
-                          itemCount: widget.product.images.length,
-                          shrinkWrap: true,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(width: TSizes.spaceBtwItems),
-                          itemBuilder: (context, index) {
-                            final image = widget.product.images[index];
-                            final isSelected =
-                                selectedImageIndex ==
-                                index; // Use index instead
+                        child: ValueListenableBuilder<int>(
+                          valueListenable: _selectedImageNotifier,
+                          builder: (context, selectedIndex, _) {
+                            return ListView.separated(
+                              itemCount: widget.product.images.length,
+                              shrinkWrap: true,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              separatorBuilder: (_, __) =>
+                                  const SizedBox(width: TSizes.spaceBtwItems),
+                              itemBuilder: (context, index) {
+                                final image = widget.product.images[index];
+                                final isSelected = selectedIndex == index;
 
-                            return RoundedImage(
-                              isNetworkImage: _isNetworkImage(image),
-                              width: 80,
-                              image: image,
-                              backgroundColor: isDark
-                                  ? TColors.dark
-                                  : TColors.white,
-                              border: Border.all(
-                                color: isSelected
-                                    ? TColors.tealColor
-                                    : Colors.transparent,
-                                width: isSelected
-                                    ? 2
-                                    : 1, // Make selected border thicker
-                              ),
-                              padding: const EdgeInsets.all(TSizes.sm),
-                              onPressed: () {
-                                print(
-                                  "Image selected: $image at index: $index",
-                                ); // Debug print
-                                setState(() {
-                                  currentImage = image;
-                                  selectedImageIndex = index;
-                                });
+                                return RoundedImage(
+                                  isNetworkImage: _isNetworkImage(image),
+                                  width: 80,
+                                  image: image,
+                                  backgroundColor: isDark
+                                      ? TColors.dark
+                                      : TColors.white,
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? TColors.tealColor
+                                        : Colors.transparent,
+                                    width: isSelected
+                                        ? 2
+                                        : 1, // Make selected border thicker
+                                  ),
+                                  padding: const EdgeInsets.all(TSizes.sm),
+                                  onPressed: () {
+                                    if (_selectedImageNotifier.value != index) {
+                                      _selectedImageNotifier.value = index;
+                                    }
+                                  },
+                                );
                               },
                             );
                           },
@@ -265,21 +278,27 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               style: Theme.of(context).textTheme.titleSmall,
                             ),
                             const SizedBox(height: defaultPadding / 2),
-                            Row(
-                              children: List.generate(
-                                availableColors.length,
-                                (index) => GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedColorIndex = index;
-                                    });
-                                  },
-                                  child: ColorDot(
-                                    color: availableColors[index],
-                                    isActive: selectedColorIndex == index,
+                            ValueListenableBuilder<int>(
+                              valueListenable: _selectedColorNotifier,
+                              builder: (context, selectedColor, _) {
+                                return Row(
+                                  children: List.generate(
+                                    availableColors.length,
+                                    (index) => GestureDetector(
+                                      onTap: () {
+                                        if (_selectedColorNotifier.value !=
+                                            index) {
+                                          _selectedColorNotifier.value = index;
+                                        }
+                                      },
+                                      child: ColorDot(
+                                        color: availableColors[index],
+                                        isActive: selectedColor == index,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             ),
                           ],
                         ),
