@@ -96,6 +96,46 @@ class AppLocalizations {
       'language.sheetTitle': 'Choose a language',
       'language.sheetSubtitle': 'Your selection updates the entire app instantly.',
       'form.required': 'This field is required',
+      'auth.login.title': 'Welcome Back',
+      'auth.login.subtitle': 'Sign in to continue to B&W',
+      'auth.email.label': 'Email',
+      'auth.email.hint': 'Enter your email address',
+      'auth.password.label': 'Password',
+      'auth.password.hint': 'Enter your password',
+      'auth.fullName.label': 'Full Name',
+      'auth.fullName.hint': 'Enter your full name',
+      'auth.login.forgot': 'Forgot Password?',
+      'auth.login.button': 'Sign In',
+      'auth.signup.button': 'Sign Up',
+      'auth.common.orContinue': 'or continue with',
+      'auth.login.footer.question': "Don't have an account?",
+      'auth.signup.footer.question': 'Already have an account?',
+      'auth.forgot.footer.question': 'Remembered your password?',
+      'auth.footer.signIn': 'Sign In',
+      'auth.footer.signUp': 'Sign Up',
+      'auth.backToSignIn': 'Back to Sign In',
+      'auth.signup.title': 'Create Account',
+      'auth.signup.subtitle': 'Sign up to get started with B&W',
+      'auth.forgot.title': 'Forgot Password',
+      'auth.forgot.subtitle': 'Enter your email to reset your password',
+      'auth.forgot.button': 'Reset Password',
+      'auth.social.apple.title': 'Apple Sign-In',
+      'auth.social.apple.message':
+          'Apple Sign-In is not available on this device.',
+      'onboarding.page1.title': 'Shop Trending\nDesigns',
+      'onboarding.page1.description':
+          'Design and personalize your T-shirts\nwith just a few taps.',
+      'onboarding.page2.title': 'Fast Delivery\n& Easy Returns',
+      'onboarding.page2.description':
+          'Design and personalize your T-shirts\nwith just a few taps.',
+      'onboarding.page3.title': 'Create Your Own\nStyle',
+      'onboarding.page3.description':
+          'Design and personalize your T-shirts\nwith just a few taps.',
+      'onboarding.next': 'Next',
+      'onboarding.getStarted': 'Get Started',
+      'onboarding.skip': 'Skip',
+      'onboarding.done': 'Done',
+      'splash.tagline': 'Curated looks, effortless style.',
     },
     'hi': {
       'profile.guestUser': 'अतिथि उपयोगकर्ता',
@@ -180,6 +220,46 @@ class AppLocalizations {
       'language.sheetTitle': 'भाषा चुनें',
       'language.sheetSubtitle': 'आपकी पसंद तुरंत पूरे ऐप पर लागू होगी।',
       'form.required': 'यह फ़ील्ड आवश्यक है',
+      'auth.login.title': 'वापसी पर स्वागत है',
+      'auth.login.subtitle': 'B&W जारी रखने के लिए साइन इन करें',
+      'auth.email.label': 'ईमेल',
+      'auth.email.hint': 'अपना ईमेल पता दर्ज करें',
+      'auth.password.label': 'पासवर्ड',
+      'auth.password.hint': 'अपना पासवर्ड दर्ज करें',
+      'auth.fullName.label': 'पूरा नाम',
+      'auth.fullName.hint': 'अपना पूरा नाम दर्ज करें',
+      'auth.login.forgot': 'पासवर्ड भूल गए?',
+      'auth.login.button': 'साइन इन',
+      'auth.signup.button': 'साइन अप',
+      'auth.common.orContinue': 'या इन विकल्पों से जारी रखें',
+      'auth.login.footer.question': 'क्या आपका खाता नहीं है?',
+      'auth.signup.footer.question': 'क्या आपके पास पहले से खाता है?',
+      'auth.forgot.footer.question': 'क्या आपको अपना पासवर्ड याद आ गया?',
+      'auth.footer.signIn': 'साइन इन',
+      'auth.footer.signUp': 'साइन अप',
+      'auth.backToSignIn': 'साइन इन पर वापस जाएँ',
+      'auth.signup.title': 'खाता बनाएँ',
+      'auth.signup.subtitle': 'B&W शुरू करने के लिए साइन अप करें',
+      'auth.forgot.title': 'पासवर्ड भूल गए',
+      'auth.forgot.subtitle': 'पासवर्ड रीसेट करने के लिए अपना ईमेल दर्ज करें',
+      'auth.forgot.button': 'पासवर्ड रीसेट करें',
+      'auth.social.apple.title': 'एप्पल साइन-इन',
+      'auth.social.apple.message':
+          'एप्पल साइन-इन इस डिवाइस पर उपलब्ध नहीं है।',
+      'onboarding.page1.title': 'ट्रेंडिंग डिज़ाइन्स\nखरीदें',
+      'onboarding.page1.description':
+          'बस कुछ टैप्स में अपने टी-शर्ट डिज़ाइन करें\nऔर उन्हें व्यक्तिगत बनाएं।',
+      'onboarding.page2.title': 'तेज़ डिलीवरी\nऔर आसान रिटर्न',
+      'onboarding.page2.description':
+          'बस कुछ टैप्स में अपने टी-शर्ट डिज़ाइन करें\nऔर उन्हें व्यक्तिगत बनाएं।',
+      'onboarding.page3.title': 'अपनी खुद की\nस्टाइल बनाएँ',
+      'onboarding.page3.description':
+          'बस कुछ टैप्स में अपने टी-शर्ट डिज़ाइन करें\nऔर उन्हें व्यक्तिगत बनाएं।',
+      'onboarding.next': 'आगे',
+      'onboarding.getStarted': 'शुरू करें',
+      'onboarding.skip': 'छोड़ें',
+      'onboarding.done': 'समाप्त',
+      'splash.tagline': 'सजावट भरी पसंद, बेपरवाह अंदाज़।',
     },
   };
 
@@ -290,6 +370,49 @@ class AppLocalizations {
   String get statReviews => _string('profile.stat.reviews');
   String get languageSheetTitle => _string('language.sheetTitle');
   String get languageSheetSubtitle => _string('language.sheetSubtitle');
+  String get authLoginTitle => _string('auth.login.title');
+  String get authLoginSubtitle => _string('auth.login.subtitle');
+  String get authEmailLabel => _string('auth.email.label');
+  String get authEmailHint => _string('auth.email.hint');
+  String get authPasswordLabel => _string('auth.password.label');
+  String get authPasswordHint => _string('auth.password.hint');
+  String get authFullNameLabel => _string('auth.fullName.label');
+  String get authFullNameHint => _string('auth.fullName.hint');
+  String get authForgotPassword => _string('auth.login.forgot');
+  String get authSignInButton => _string('auth.login.button');
+  String get authSignUpButton => _string('auth.signup.button');
+  String get authOrContinue => _string('auth.common.orContinue');
+  String get authLoginFooterQuestion =>
+      _string('auth.login.footer.question');
+  String get authSignupFooterQuestion =>
+      _string('auth.signup.footer.question');
+  String get authForgotFooterQuestion =>
+      _string('auth.forgot.footer.question');
+  String get authFooterSignIn => _string('auth.footer.signIn');
+  String get authFooterSignUp => _string('auth.footer.signUp');
+  String get authBackToSignIn => _string('auth.backToSignIn');
+  String get authSignupTitle => _string('auth.signup.title');
+  String get authSignupSubtitle => _string('auth.signup.subtitle');
+  String get authForgotTitle => _string('auth.forgot.title');
+  String get authForgotSubtitle => _string('auth.forgot.subtitle');
+  String get authForgotButton => _string('auth.forgot.button');
+  String get authSocialAppleTitle => _string('auth.social.apple.title');
+  String get authSocialAppleMessage =>
+      _string('auth.social.apple.message');
+  String get onboardingPage1Title => _string('onboarding.page1.title');
+  String get onboardingPage1Description =>
+      _string('onboarding.page1.description');
+  String get onboardingPage2Title => _string('onboarding.page2.title');
+  String get onboardingPage2Description =>
+      _string('onboarding.page2.description');
+  String get onboardingPage3Title => _string('onboarding.page3.title');
+  String get onboardingPage3Description =>
+      _string('onboarding.page3.description');
+  String get onboardingNext => _string('onboarding.next');
+  String get onboardingGetStarted => _string('onboarding.getStarted');
+  String get onboardingSkip => _string('onboarding.skip');
+  String get onboardingDone => _string('onboarding.done');
+  String get splashTagline => _string('splash.tagline');
 
   String ordersDescription(int count) {
     if (count > 0) {

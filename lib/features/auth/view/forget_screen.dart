@@ -9,6 +9,7 @@ import 'package:shop/features/auth/widgets/auth_header.dart';
 import 'package:shop/features/auth/widgets/social_auth.dart';
 import 'package:shop/features/auth/view/login_screen.dart';
 import 'package:shop/responsive/responsiveness.dart';
+import 'package:shop/utils/localization/app_localizations.dart';
 import 'package:shop/utils/validators/validators.dart';
 
 import '../controller/forget_controller/forget_controller.dart';
@@ -25,6 +26,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
+        final loc = context.loc;
         return ChangeNotifierProvider(
           create: (_) => ForgetPasswordController(),
           child: Consumer<ForgetPasswordController>(
@@ -82,21 +84,22 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
                             // Back Button
                             IconButton(
-                              onPressed: () => Get.offAll(() => const LoginScreen()),
+                              onPressed: () =>
+                                  Get.offAll(() => const LoginScreen()),
                               icon: const Icon(
                                 Icons.arrow_back,
                                 color: Colors.black87, // App theme color
                                 size: 28,
                               ),
-                              tooltip: 'Back to Sign In',
+                              tooltip: loc.authBackToSignIn,
                             ),
 
                             const SizedBox(height: 10),
 
                             // Header
-                            const AuthHeader(
-                              title: 'Forgot Password',
-                              subtitle: 'Enter your email to reset your password',
+                            AuthHeader(
+                              title: loc.authForgotTitle,
+                              subtitle: loc.authForgotSubtitle,
                             ),
                             const SizedBox(height: 40),
 
@@ -107,8 +110,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                 children: [
                                   CustomTextField(
                                     controller: controller.emailController,
-                                    label: 'Email',
-                                    hint: 'Enter your email address',
+                                    label: loc.authEmailLabel,
+                                    hint: loc.authEmailHint,
                                     keyboardType: TextInputType.emailAddress,
                                     validator: (value) => TValidator.validateEmail(value),
                                   ),
@@ -116,15 +119,15 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
                                   // Reset Button
                                   CustomButton(
-                                    text: 'Reset Password',
+                                    text: loc.authForgotButton,
                                     isLoading: controller.isLoading,
                                     onPressed: () => controller.resetPassword(context),
                                   ),
                                   const SizedBox(height: 24),
 
                                   AuthFooter(
-                                    question: "Remembered your password?",
-                                    actionText: 'Sign In',
+                                    question: loc.authForgotFooterQuestion,
+                                    actionText: loc.authFooterSignIn,
                                     onActionTap: () => Get.offAll(() => const LoginScreen()),
                                   ),
                                   const SizedBox(height: 20),
