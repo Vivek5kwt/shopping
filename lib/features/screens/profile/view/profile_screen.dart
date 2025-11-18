@@ -8,6 +8,9 @@ import 'package:shop/features/screens/orders/view/order_list.dart';
 import 'package:shop/features/screens/profile/view/addresses_screen.dart';
 import 'package:shop/features/screens/profile/view/edit_profile_screen.dart';
 import 'package:shop/features/screens/profile/view/payment_methods_screen.dart';
+import 'package:shop/features/screens/profile/view/help_center_screen.dart';
+import 'package:shop/features/screens/profile/view/privacy_policy_screen.dart';
+import 'package:shop/features/screens/profile/view/terms_conditions_screen.dart';
 import 'package:shop/utils/localization/app_localizations.dart';
 import 'package:shop/utils/localization/language_provider.dart';
 import 'package:shop/utils/responsive/responsive.dart';
@@ -378,7 +381,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           subtitle: loc.helpCenterSubtitle,
                           color: const Color(0xFF06B6D4),
                           isDark: isDark,
-                          onTap: () {},
+                          onTap: () => Get.to(() => const HelpCenterScreen()),
                         ),
                         const Divider(height: 1),
                         _buildOption(
@@ -389,7 +392,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           subtitle: loc.privacyPolicySubtitle,
                           color: const Color(0xFF84CC16),
                           isDark: isDark,
-                          onTap: () {},
+                          onTap: () =>
+                              Get.to(() => const PrivacyPolicyScreen()),
                         ),
                         const Divider(height: 1),
                         _buildOption(
@@ -400,7 +404,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           subtitle: loc.termsSubtitle,
                           color: const Color(0xFFA855F7),
                           isDark: isDark,
-                          onTap: () {},
+                          onTap: () =>
+                              Get.to(() => const TermsConditionsScreen()),
                         ),
                       ]),
 

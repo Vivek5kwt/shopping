@@ -40,10 +40,32 @@ class AppLocalizations {
       'profile.darkModeSubtitle': 'Switch theme appearance',
       'profile.helpCenter': 'Help Center',
       'profile.helpCenterSubtitle': 'FAQs and support',
+      'profile.contactSupport': 'Contact Support',
+      'profile.chatWithTeam': 'Chat with our team',
+      'profile.quickActions': 'Quick Actions',
+      'profile.faqs': 'Frequently Asked Questions',
+      'profile.needHelpTitle': 'Need help?',
+      'profile.helpHeroDescription':
+          'Our support team is available 24/7. Chat with us or explore curated answers to common questions.',
+      'profile.trackOrder': 'Track Order',
+      'profile.trackOrderSubtitle': 'Realtime delivery updates',
+      'profile.reportIssue': 'Report Issue',
+      'profile.reportIssueSubtitle': 'Let us know what happened',
       'profile.privacyPolicy': 'Privacy Policy',
       'profile.privacyPolicySubtitle': 'View our privacy policy',
+      'profile.respectPrivacyTitle': 'We respect your privacy',
+      'profile.respectPrivacySubtitle':
+          'Every interaction is encrypted end-to-end and stays compliant with GDPR & local regulations.',
+      'profile.needSomethingElse': 'Need something else?',
+      'profile.privacyEmailDescription':
+          'Write to privacy@shop.com and we will address any request in under 48 hours.',
       'profile.terms': 'Terms & Conditions',
       'profile.termsSubtitle': 'View terms of service',
+      'profile.transparencyTitle': 'Designed for transparency',
+      'profile.transparencySubtitle':
+          'Please review the highlights below. By continuing to use the app you agree to the full terms and policies.',
+      'profile.acceptanceNote':
+          'By continuing you accept these Terms & Conditions in addition to the Privacy Policy and Help Center guidelines.',
       'profile.personalInfo': 'Personal Information',
       'profile.profileUpdateSubtitle':
           'Keep your details updated for a seamless experience',
@@ -102,10 +124,32 @@ class AppLocalizations {
       'profile.darkModeSubtitle': 'थीम रूप बदलें',
       'profile.helpCenter': 'सहायता केंद्र',
       'profile.helpCenterSubtitle': 'सामान्य प्रश्न और सहायता',
+      'profile.contactSupport': 'सहायता से संपर्क करें',
+      'profile.chatWithTeam': 'हमारी टीम से चैट करें',
+      'profile.quickActions': 'त्वरित क्रियाएँ',
+      'profile.faqs': 'अक्सर पूछे जाने वाले प्रश्न',
+      'profile.needHelpTitle': 'मदद चाहिए?',
+      'profile.helpHeroDescription':
+          'हमारी सहायता टीम 24/7 उपलब्ध है। हमसे चैट करें या सामान्य प्रश्नों के लिए तैयार किए गए उत्तर देखें।',
+      'profile.trackOrder': 'ऑर्डर ट्रैक करें',
+      'profile.trackOrderSubtitle': 'रियलटाइम डिलीवरी अपडेट्स',
+      'profile.reportIssue': 'समस्या रिपोर्ट करें',
+      'profile.reportIssueSubtitle': 'हमें बताएं क्या हुआ',
       'profile.privacyPolicy': 'गोपनीयता नीति',
       'profile.privacyPolicySubtitle': 'हमारी गोपनीयता नीति देखें',
+      'profile.respectPrivacyTitle': 'हम आपकी गोपनीयता का सम्मान करते हैं',
+      'profile.respectPrivacySubtitle':
+          'हर इंटरैक्शन एंड-टू-एंड एन्क्रिप्टेड है और GDPR तथा स्थानीय नियमों के अनुरूप है।',
+      'profile.needSomethingElse': 'कुछ और चाहिए?',
+      'profile.privacyEmailDescription':
+          'privacy@shop.com पर लिखें और हम 48 घंटों के भीतर किसी भी अनुरोध का जवाब देंगे।',
       'profile.terms': 'नियम और शर्तें',
       'profile.termsSubtitle': 'सेवा की शर्तें देखें',
+      'profile.transparencyTitle': 'पारदर्शिता के लिए डिज़ाइन किया गया',
+      'profile.transparencySubtitle':
+          'नीचे दिए गए मुख्य बिंदुओं की समीक्षा करें। ऐप का उपयोग जारी रखते हुए आप सभी नियमों और नीतियों से सहमत होते हैं।',
+      'profile.acceptanceNote':
+          'जारी रखते हुए आप इन नियमों व शर्तों के साथ-साथ गोपनीयता नीति और सहायता दिशानिर्देशों से भी सहमत होते हैं।',
       'profile.personalInfo': 'व्यक्तिगत जानकारी',
       'profile.profileUpdateSubtitle':
           'बेहतर अनुभव के लिए अपनी जानकारी अद्यतन रखें',
@@ -191,11 +235,32 @@ class AppLocalizations {
   String get darkModeSubtitle => _string('profile.darkModeSubtitle');
   String get helpCenter => _string('profile.helpCenter');
   String get helpCenterSubtitle => _string('profile.helpCenterSubtitle');
+  String get contactSupport => _string('profile.contactSupport');
+  String get chatWithTeam => _string('profile.chatWithTeam');
+  String get quickActions => _string('profile.quickActions');
+  String get faqs => _string('profile.faqs');
+  String get needHelpTitle => _string('profile.needHelpTitle');
+  String get helpHeroDescription => _string('profile.helpHeroDescription');
+  String get trackOrder => _string('profile.trackOrder');
+  String get trackOrderSubtitle => _string('profile.trackOrderSubtitle');
+  String get reportIssue => _string('profile.reportIssue');
+  String get reportIssueSubtitle =>
+      _string('profile.reportIssueSubtitle');
   String get privacyPolicy => _string('profile.privacyPolicy');
   String get privacyPolicySubtitle =>
       _string('profile.privacyPolicySubtitle');
+  String get respectPrivacyTitle => _string('profile.respectPrivacyTitle');
+  String get respectPrivacySubtitle =>
+      _string('profile.respectPrivacySubtitle');
+  String get needSomethingElse => _string('profile.needSomethingElse');
+  String get privacyEmailDescription =>
+      _string('profile.privacyEmailDescription');
   String get terms => _string('profile.terms');
   String get termsSubtitle => _string('profile.termsSubtitle');
+  String get transparencyTitle => _string('profile.transparencyTitle');
+  String get transparencySubtitle =>
+      _string('profile.transparencySubtitle');
+  String get acceptanceNote => _string('profile.acceptanceNote');
   String get personalInfo => _string('profile.personalInfo');
   String get profileUpdateSubtitle =>
       _string('profile.profileUpdateSubtitle');
