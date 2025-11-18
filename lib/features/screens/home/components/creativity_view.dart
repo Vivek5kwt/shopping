@@ -78,8 +78,10 @@ class _CreativityViewState extends State<CreativityView> {
               return AnimatedPadding(
                 duration: const Duration(milliseconds: 350),
                 curve: Curves.easeOut,
-                padding: EdgeInsets.symmetric(horizontal: defaultPadding / 2)
-                    .copyWith(vertical: isFocused ? 12 : 26),
+                padding: EdgeInsets.symmetric(
+                  horizontal: defaultPadding / 2,
+                  vertical: isFocused ? 12 : 26,
+                ),
                 child: GestureDetector(
                   onTap: widget.onProductTap != null
                       ? () => widget.onProductTap!(product)
