@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/features/admin/features/models/product_model.dart';
 import 'package:shop/features/auth/controller/auth/auth_provider.dart';
+import 'package:shop/features/auth/model/rating.dart';
 import 'package:shop/features/controllers/products/rating_controller.dart';
 
 class RatingBars extends StatefulWidget {
@@ -17,14 +18,19 @@ class _RatingBarsState extends State<RatingBars> {
   double myRating = 0;
   @override
   void initState() {
-    for (int i = 0; i < widget.product.rating!.length; i++) {
-      if (widget.product.rating![i].userId ==
-          Provider.of<AuthProvider>(context, listen: false).user!.id) {
-        myRating = widget.product.rating![i].rating;
+    super.initState();
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final currentUserId = authProvider.user?.id;
+    if (currentUserId == null) return;
+
+    final ratings = widget.product.rating ?? <Rating>[];
+    for (final rating in ratings) {
+      if (rating.userId == currentUserId) {
+        myRating = rating.rating;
+        break;
       }
     }
-
-    super.initState();
   }
 
   @override
