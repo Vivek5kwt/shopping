@@ -10,6 +10,7 @@ import 'package:shop/features/screens/home/notification_screen.dart';
 import 'package:shop/features/screens/profile/view/addresses_screen.dart';
 
 import 'components/categories.dart';
+import 'components/creativity_view.dart';
 import 'components/new_arrival_products.dart';
 import 'components/search_form.dart';
 
@@ -639,7 +640,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: defaultPadding / 2),
                     SizedBox(
-                      height: 190,
+                      height: 230,
                       child: _soldTshirts.isNotEmpty
                           ? ListView.builder(
                               scrollDirection: Axis.horizontal,
@@ -680,7 +681,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: defaultPadding / 2),
                     SizedBox(
-                      height: 190,
+                      height: 230,
                       child: _soldTshirts.isNotEmpty
                           ? ListView.builder(
                               scrollDirection: Axis.horizontal,
@@ -698,6 +699,38 @@ class _HomeScreenState extends State<HomeScreen> {
               // New arrivals (kept as before)
               const SizedBox(height: defaultPadding),
               const NewArrivalProducts(),
+
+              if (_soldTshirts.isNotEmpty) ...[
+                const SizedBox(height: defaultPadding),
+                const Text(
+                  'Creativity View',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 8),
+                CreativityView(
+                  products: _soldTshirts,
+                  onProductTap: (product) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Exploring ${product['title']}")),
+                    );
+                  },
+                ),
+              ] else ...[
+                const SizedBox(height: defaultPadding),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(defaultPadding),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.black12),
+                  ),
+                  child: const Text(
+                    'Creativity View unlocks once you interact with more T-shirts.',
+                    style: TextStyle(color: Colors.black54),
+                  ),
+                ),
+              ],
 
               const SizedBox(height: 100),
             ],
