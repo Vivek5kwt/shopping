@@ -38,7 +38,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final bool isDark = theme.brightness == Brightness.dark;
-    final Color statusColor = theme.scaffoldBackgroundColor;
+    const lightBackground = Color(0xFFF8F8FF);
+    final Color statusColor = isDark ? theme.scaffoldBackgroundColor : lightBackground;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
@@ -47,6 +48,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
       ),
       child: Scaffold(
+        backgroundColor: statusColor,
         appBar: CustomeAppbar(
           showbackArrow: true,
           title: Text(
