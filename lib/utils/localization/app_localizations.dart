@@ -44,6 +44,23 @@ class AppLocalizations {
       'profile.privacyPolicySubtitle': 'View our privacy policy',
       'profile.terms': 'Terms & Conditions',
       'profile.termsSubtitle': 'View terms of service',
+      'profile.personalInfo': 'Personal Information',
+      'profile.profileUpdateSubtitle':
+          'Keep your details updated for a seamless experience',
+      'profile.fullNameLabel': 'Full Name',
+      'profile.emailLabel': 'Email Address',
+      'profile.phoneLabel': 'Phone Number',
+      'profile.locationLabel': 'Location',
+      'profile.profileInfoHelper':
+          'Your personal information helps us tailor recommendations and keep your account secure.',
+      'profile.saveChanges': 'Save Changes',
+      'profile.profileUpdated': 'Profile details saved successfully!',
+      'profile.addAddressCta': 'Add New Address',
+      'profile.remove': 'Remove',
+      'profile.primaryBadge': 'Primary',
+      'profile.addPaymentMethodCta': 'Add Payment Method',
+      'profile.expiryLabel': 'Expiry',
+      'profile.cardHolderLabel': 'Cardholder',
       'profile.logout': 'Logout',
       'profile.logoutConfirmTitle': 'Confirm Logout',
       'profile.logoutConfirmMessage': 'Are you sure you want to logout?',
@@ -56,6 +73,7 @@ class AppLocalizations {
       'language.hindi': 'Hindi',
       'language.sheetTitle': 'Choose a language',
       'language.sheetSubtitle': 'Your selection updates the entire app instantly.',
+      'form.required': 'This field is required',
     },
     'hi': {
       'profile.guestUser': 'अतिथि उपयोगकर्ता',
@@ -88,6 +106,23 @@ class AppLocalizations {
       'profile.privacyPolicySubtitle': 'हमारी गोपनीयता नीति देखें',
       'profile.terms': 'नियम और शर्तें',
       'profile.termsSubtitle': 'सेवा की शर्तें देखें',
+      'profile.personalInfo': 'व्यक्तिगत जानकारी',
+      'profile.profileUpdateSubtitle':
+          'बेहतर अनुभव के लिए अपनी जानकारी अद्यतन रखें',
+      'profile.fullNameLabel': 'पूरा नाम',
+      'profile.emailLabel': 'ईमेल पता',
+      'profile.phoneLabel': 'फ़ोन नंबर',
+      'profile.locationLabel': 'स्थान',
+      'profile.profileInfoHelper':
+          'आपकी व्यक्तिगत जानकारी हमें सुझावों को व्यक्तिगत बनाने और खाते को सुरक्षित रखने में मदद करती है।',
+      'profile.saveChanges': 'परिवर्तन सहेजें',
+      'profile.profileUpdated': 'प्रोफ़ाइल विवरण सफलतापूर्वक सहेजे गए!',
+      'profile.addAddressCta': 'नया पता जोड़ें',
+      'profile.remove': 'हटाएं',
+      'profile.primaryBadge': 'प्राथमिक',
+      'profile.addPaymentMethodCta': 'भुगतान विधि जोड़ें',
+      'profile.expiryLabel': 'समाप्ति',
+      'profile.cardHolderLabel': 'कार्डधारक',
       'profile.logout': 'लॉगआउट',
       'profile.logoutConfirmTitle': 'लॉगआउट की पुष्टि करें',
       'profile.logoutConfirmMessage': 'क्या आप वास्तव में लॉगआउट करना चाहते हैं?',
@@ -100,6 +135,7 @@ class AppLocalizations {
       'language.hindi': 'हिंदी',
       'language.sheetTitle': 'भाषा चुनें',
       'language.sheetSubtitle': 'आपकी पसंद तुरंत पूरे ऐप पर लागू होगी।',
+      'form.required': 'यह फ़ील्ड आवश्यक है',
     },
   };
 
@@ -160,6 +196,24 @@ class AppLocalizations {
       _string('profile.privacyPolicySubtitle');
   String get terms => _string('profile.terms');
   String get termsSubtitle => _string('profile.termsSubtitle');
+  String get personalInfo => _string('profile.personalInfo');
+  String get profileUpdateSubtitle =>
+      _string('profile.profileUpdateSubtitle');
+  String get fullNameLabel => _string('profile.fullNameLabel');
+  String get emailLabel => _string('profile.emailLabel');
+  String get phoneLabel => _string('profile.phoneLabel');
+  String get locationLabel => _string('profile.locationLabel');
+  String get profileInfoHelper => _string('profile.profileInfoHelper');
+  String get saveChanges => _string('profile.saveChanges');
+  String get profileUpdated => _string('profile.profileUpdated');
+  String get addAddressCta => _string('profile.addAddressCta');
+  String get removeAction => _string('profile.remove');
+  String get primaryBadge => _string('profile.primaryBadge');
+  String get addPaymentMethodCta =>
+      _string('profile.addPaymentMethodCta');
+  String get expiryLabel => _string('profile.expiryLabel');
+  String get cardHolderLabel => _string('profile.cardHolderLabel');
+  String get fieldRequired => _string('form.required');
   String get logout => _string('profile.logout');
   String get logoutConfirmTitle => _string('profile.logoutConfirmTitle');
   String get logoutConfirmMessage =>
