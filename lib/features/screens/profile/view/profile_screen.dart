@@ -291,6 +291,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
+            ],
+          ),
+        ),
               Positioned(
                 left: responsive.spacing(16),
                 right: responsive.spacing(16),
