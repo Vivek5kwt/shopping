@@ -11,7 +11,9 @@ import 'package:shop/utils/sizes/size.dart';
 import 'package:shop/utils/theme/helper.dart';
 
 class CartScreen extends StatelessWidget {
-  const CartScreen({super.key});
+  const CartScreen({super.key, this.showBackButton = false});
+
+  final bool showBackButton;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +61,7 @@ class CartScreen extends StatelessWidget {
               : Scaffold(
                   appBar: AppBar(
                     automaticallyImplyLeading: false,
-                    leading: canPop
+                    leading: showBackButton
                         ? IconButton(
                             icon: const Icon(Icons.arrow_back_ios_new),
                             onPressed: () => navigator.maybePop(),
