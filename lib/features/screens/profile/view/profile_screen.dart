@@ -221,11 +221,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         const Divider(height: 1),
                         _buildOption(
+                          context: context,
                           responsive: responsive,
                           icon: Icons.star_outline,
                           title: loc.reviews,
                           subtitle: loc.reviewsSubtitle,
                           color: const Color(0xFFF59E0B),
+                          isDark: isDark,
                           onTap: () {},
                         ),
                       ]),
