@@ -60,6 +60,13 @@ dependencies:
   google_sign_in: ^6.1.6
   sign_in_with_apple: ^7.0.1
 
+dependency_overrides:
+  # google_sign_in_android 6.1.15 is not compatible with the latest Flutter
+  # embedding APIs (it still references the old v1 registrar APIs), so we pin
+  # the Android implementation to a newer patch release that contains the
+  # embedding v2 migration.
+  google_sign_in_android: ^6.1.16
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
