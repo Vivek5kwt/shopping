@@ -5,7 +5,6 @@ import 'package:shop/custom_bottom_navbar.dart';
 import 'package:shop/features/auth/controller/auth/auth_provider.dart';
 import 'package:shop/features/cart/widget/cart.dart';
 import 'package:shop/features/screens/checkout/view/checkout_screen.dart';
-import 'package:shop/features/screens/home/home_screen.dart';
 import 'package:shop/utils/image/images.dart';
 import 'package:shop/utils/loaders/animation_loader.dart';
 import 'package:shop/utils/sizes/size.dart';
@@ -17,16 +16,25 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = THelperFunctions.isDarkMode(context);
+    final mainController = context.read<MainController>();
 
     return SafeArea(
       child: Consumer<AuthProvider>(
         builder: (context, controller, child) {
+          final navigator = Navigator.of(context);
+          final canPop = navigator.canPop();
           final emptyWidget = TAnimationLoaderWidget(
             text: "Whoops! cart is empty",
             animation: TImages.cartAnimation,
             showAction: true,
             actionText: "Let's fill it",
-            onActionPressed: () => HomeScreen(),
+            onActionPressed: () {
+              if (navigator.canPop()) {
+                navigator.pop();
+              } else {
+                mainController.changePage(0);
+              }
+            },
           );
           final cartItems = controller.user?.cart ?? [];
           double sum = 0;
@@ -51,7 +59,12 @@ class CartScreen extends StatelessWidget {
               : Scaffold(
                   appBar: AppBar(
                     automaticallyImplyLeading: false,
-      
+                    leading: canPop
+                        ? IconButton(
+                            icon: const Icon(Icons.arrow_back_ios_new),
+                            onPressed: () => navigator.maybePop(),
+                          )
+                        : null,
                     title: Text(
                       'Cart',
                       style: Theme.of(context).textTheme.headlineSmall,
