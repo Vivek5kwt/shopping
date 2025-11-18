@@ -7,6 +7,7 @@ import 'package:shop/features/screens/favorite/view/favorite_screen.dart';
 import 'package:shop/features/screens/orders/view/order_list.dart';
 import 'package:shop/utils/responsive/responsive.dart';
 import 'package:shop/utils/shimmer/shimmer_effect.dart';
+import 'package:shop/utils/theme/theme_provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -16,6 +17,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  static const double _bottomNavBarHeight = 110;
+
   @override
   void initState() {
     super.initState();
@@ -56,23 +59,24 @@ class _ProfilePageState extends State<ProfilePage> {
             : 'No email provided';
         final String profilePic = _safeString(user?.profilePic);
         final int ordersCount = orderController.orders?.length ?? 0;
+        final double logoutButtonBottomPadding =
+            MediaQuery.of(context).padding.bottom +
+                responsive.spacing(16) +
+                _bottomNavBarHeight;
 
         // Instead of showing a full-screen loader when user is null, show the page with demo/fallback data.
         // This avoids leaving the user staring at a loader indefinitely when no data comes back.
         return Scaffold(
 
           backgroundColor: Colors.grey[50],
-          // Sticky logout button placed here so it is always visible and properly positioned
-          bottomNavigationBar: SafeArea(
-            minimum: EdgeInsets.only(
-              left: responsive.spacing(16),
-              right: responsive.spacing(16),
-              bottom: responsive.spacing(8),
-            ),
-            child: _buildStickyLogoutButton(responsive),
-          ),
-          body: CustomScrollView(
-            slivers: [
+          body: Stack(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: logoutButtonBottomPadding + responsive.spacing(72),
+                ),
+                child: CustomScrollView(
+                  slivers: [
               // App Bar with Profile Header
               SliverAppBar(
                 automaticallyImplyLeading: false,
@@ -231,10 +235,19 @@ class _ProfilePageState extends State<ProfilePage> {
                           subtitle: 'Switch theme appearance',
                           color: const Color(0xFF64748B),
                           onTap: () {},
-                          trailing: Switch(
-                            value: false,
-                            onChanged: (value) {},
-                            activeColor: const Color(0xFF3B82F6),
+                          trailing: Consumer<ThemeProvider>(
+                            builder: (context, themeProvider, _) {
+                              final bool switchValue = themeProvider.isInitialized
+                                  ? themeProvider.isDarkMode
+                                  : false;
+                              return Switch(
+                                value: switchValue,
+                                onChanged: themeProvider.isInitialized
+                                    ? (value) => themeProvider.toggleTheme(value)
+                                    : null,
+                                activeColor: const Color(0xFF3B82F6),
+                              );
+                            },
                           ),
                         ),
                       ]),
@@ -273,16 +286,16 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ]),
 
-                      ResponsiveSizedBox(height: 16),
-
-                      // Previously the logout button was placed here which could be clipped or not visible on some devices.
-                      // We moved the actual interactive logout control into the scaffold's bottomNavigationBar to
-                      // ensure it's always visible above system UI (safe area) and consistently sized.
-                      // Keep a spacer so content doesn't butt up against the bottom button.
-                      ResponsiveSizedBox(height: 80),
+                      ResponsiveSizedBox(height: responsive.spacing(220)),
                     ],
                   ),
                 ),
+              ),
+              Positioned(
+                left: responsive.spacing(16),
+                right: responsive.spacing(16),
+                bottom: logoutButtonBottomPadding,
+                child: _buildStickyLogoutButton(responsive),
               ),
             ],
           ),
@@ -292,7 +305,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildStickyLogoutButton(ResponsiveUtils responsive) {
-    // The sticky logout button is placed in the scaffold's bottomNavigationBar inside a SafeArea.
+    // The sticky logout button floats above the custom bottom bar so that it is always tappable.
     // It uses a Consumer to access the UserController and shows a confirmation dialog before logging out.
     return Consumer<UserController>(
       builder: (context, userController, child) {
