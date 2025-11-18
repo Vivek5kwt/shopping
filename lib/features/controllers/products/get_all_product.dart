@@ -64,8 +64,12 @@ class GetAllProduct with ChangeNotifier {
             .map((product) => ProductModel.fromJson(product))
             .toList();
 
-        // Get random products
-        _randomProductsList = _getRandomProductsFromList(allProducts, count);
+        final List<ProductModel> tshirtProducts =
+            allProducts.where((product) => _isTshirtCategory(product.category)).toList();
+
+        // Get random products but keep the feed limited to T-shirts when possible
+        final sourceList = tshirtProducts.isNotEmpty ? tshirtProducts : allProducts;
+        _randomProductsList = _getRandomProductsFromList(sourceList, count);
         print(
           "🏠 Loaded ${_randomProductsList.length} Random Products for Home",
         );
@@ -99,6 +103,15 @@ class GetAllProduct with ChangeNotifier {
 
     // Return the requested count or all available products if less than count
     return shuffled.take(count).toList();
+  }
+
+  bool _isTshirtCategory(String? category) {
+    if (category == null) return false;
+    final normalized = category.toLowerCase();
+    return normalized.contains('t-shirt') ||
+        normalized.contains('tshirt') ||
+        normalized.contains('tee') ||
+        normalized.contains('shirt');
   }
 
   // Refresh random products
