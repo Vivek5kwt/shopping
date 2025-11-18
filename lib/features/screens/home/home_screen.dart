@@ -4,10 +4,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/constants.dart';
+import 'package:shop/features/admin/features/models/product_model.dart';
 import 'package:shop/features/auth/controller/auth/auth_provider.dart';
 import 'package:shop/features/cart/view/cart_screen.dart';
 import 'package:shop/features/screens/home/notification_screen.dart';
 import 'package:shop/features/screens/profile/view/addresses_screen.dart';
+import 'package:shop/features/screens/details/details_screen.dart';
 
 import 'components/categories.dart';
 import 'components/creativity_view.dart';
@@ -30,38 +32,72 @@ class _HomeScreenState extends State<HomeScreen> {
   // According to user request, we only show sold T-shirts in the Recent and Trending sections.
   final List<Map<String, dynamic>> _sampleProducts = [
     {
-      'id': 1,
+      'id': 'classic-white',
       'title': 'Classic White T-Shirt',
       'image': 'assets/images/product_0.png',
       'isTshirt': true,
       'sold': true,
       'price': 19.99,
+      'quantity': 12,
+      'category': 'Essential Tees',
+      'description':
+          'Our best-selling breathable cotton tee with a tailored fit. Finished with pre-shrunk fabric so it keeps its shape wear after wear.',
+      'images': [
+        'assets/images/product_0.png',
+        'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=600&q=80',
+      ],
     },
     {
-      'id': 2,
+      'id': 'black-logo',
       'title': 'Black Logo Tee',
       'image': 'assets/images/product_1.png',
       'isTshirt': true,
       'sold': true,
       'price': 24.99,
+      'quantity': 5,
+      'category': 'Streetwear',
+      'description':
+          'A bold monochrome tee with our signature embroidery. Premium jersey cotton with reinforced seams built for everyday wear.',
+      'images': [
+        'assets/images/product_1.png',
+        'https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80',
+      ],
     },
     {
-      'id': 3,
+      'id': 'blue-vneck',
       'title': 'Blue V-Neck T-Shirt',
       'image': 'assets/images/product_2.png',
       'isTshirt': true,
       'sold': false,
       'price': 21.50,
+      'quantity': 20,
+      'category': 'Everyday Basics',
+      'description':
+          'Soft-touch V-neck made from recycled fibers. Lightweight, moisture-wicking and ready for summer layers.',
+      'images': [
+        'assets/images/product_2.png',
+        'https://images.unsplash.com/photo-1484519332611-516457305ff6?auto=format&fit=crop&w=600&q=80',
+      ],
     },
     {
-      'id': 4,
+      'id': 'graphic-limited',
       'title': 'Graphic Tee (Limited)',
       'image': 'assets/images/product_3.png',
       'isTshirt': true,
       'sold': true,
       'price': 29.99,
+      'quantity': 2,
+      'category': 'Limited Drops',
+      'description':
+          'Limited-edition drop with hand-illustrated artwork. Printed using eco-friendly inks on a heavyweight tee.',
+      'images': [
+        'assets/images/product_3.png',
+        'https://images.unsplash.com/photo-1495107334309-fcf20504a5ab?auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1475180098004-ca77a66827be?auto=format&fit=crop&w=600&q=80',
+      ],
     },
-    // Add more mock items if you want
   ];
 
   List<Map<String, dynamic>> get _soldTshirts =>
@@ -80,6 +116,41 @@ class _HomeScreenState extends State<HomeScreen> {
     if (Scaffold.maybeOf(context) != null) Navigator.of(context).maybePop();
   }
 
+  ProductModel _mapToProductModel(Map<String, dynamic> product) {
+    final images = (product['images'] as List<dynamic>?)
+            ?.map((item) => item.toString())
+            .where((element) => element.isNotEmpty)
+            .toList() ??
+        [];
+
+    final fallbackImage = product['image']?.toString();
+    if (images.isEmpty && fallbackImage != null) {
+      images.add(fallbackImage);
+    }
+
+    return ProductModel(
+      name: product['title'] ?? 'Untitled',
+      descriptions: product['description'] ?? 'No description available yet.',
+      price: (product['price'] ?? 0).toDouble(),
+      quantity: product['quantity'] is int
+          ? product['quantity'] as int
+          : int.tryParse(product['quantity'].toString()) ?? 0,
+      images: images,
+      category: product['category'] ?? 'T-Shirts',
+      id: product['id']?.toString(),
+      rating: null,
+    );
+  }
+
+  void _openProductDetail(Map<String, dynamic> product) {
+    final productModel = _mapToProductModel(product);
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => DetailsScreen(product: productModel),
+      ),
+    );
+  }
+
   Widget _buildProductCard(Map<String, dynamic> product) {
     return Container(
       width: 160,
@@ -96,12 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       child: InkWell(
-        onTap: () {
-          // TODO: navigate to product details
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('${product['title']} tapped')),
-          );
-        },
+        onTap: () => _openProductDetail(product),
         child: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,9 +215,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.green.shade700,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Text(
-                    'Sold',
-                    style: TextStyle(color: Colors.white, fontSize: 12),
+                  child: Text(
+                    product['sold'] == true ? 'Sold' : 'Live',
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
                   ),
                 ),
               )
@@ -718,9 +784,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 CreativityView(
                   products: _soldTshirts,
                   onProductTap: (product) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Exploring ${product['title']}")),
-                    );
+                    _openProductDetail(product);
                   },
                 ),
               ] else ...[

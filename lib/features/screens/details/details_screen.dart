@@ -46,6 +46,70 @@ class _DetailsScreenState extends State<DetailsScreen> {
     selectedImageIndex = 0;
   }
 
+  bool _isNetworkImage(String imagePath) {
+    return imagePath.startsWith('http');
+  }
+
+  Widget _buildPrimaryImage(BuildContext context) {
+    final image = currentImage;
+    if (image.isEmpty) {
+      return const Icon(Icons.error_outline, size: 64, color: Colors.grey);
+    }
+
+    final isNetwork = _isNetworkImage(image);
+
+    final imageWidget = isNetwork
+        ? CachedNetworkImage(
+            key: ValueKey('network-$image'),
+            imageUrl: image,
+            fit: BoxFit.contain,
+            progressIndicatorBuilder: (_, __, downloadProgress) =>
+                CircularProgressIndicator(
+              value: downloadProgress.progress,
+              color: TColors.primary,
+            ),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          )
+        : Image.asset(
+            image,
+            key: ValueKey('asset-$image'),
+            fit: BoxFit.contain,
+          );
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      switchInCurve: Curves.easeOut,
+      switchOutCurve: Curves.easeIn,
+      child: imageWidget,
+    );
+  }
+
+  Widget _buildInfoRow(String title, String value, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: TColors.tealColor),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Colors.black54,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(fontWeight: FontWeight.w500),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = THelperFunctions.isDarkMode(context);
@@ -77,21 +141,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           TSizes.productImageRadius * 2,
                         ),
                         child: Center(
-                          child: CachedNetworkImage(
-                            key: ValueKey(
-                              currentImage,
-                            ), // Add this key to force rebuild
-                            imageUrl: currentImage,
+                          child: SizedBox(
                             height: MediaQuery.of(context).size.height * 0.4,
-                            fit: BoxFit.contain,
-                            progressIndicatorBuilder:
-                                (_, __, downloadProgress) =>
-                                    CircularProgressIndicator(
-                                      value: downloadProgress.progress,
-                                      color: TColors.primary,
-                                    ),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
+                            child: _buildPrimaryImage(context),
                           ),
                         ),
                       ),
@@ -117,7 +169,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 index; // Use index instead
 
                             return RoundedImage(
-                              isNetworkImage: true,
+                              isNetworkImage: _isNetworkImage(image),
                               width: 80,
                               image: image,
                               backgroundColor: isDark
@@ -193,7 +245,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       padding: EdgeInsets.symmetric(
                         vertical: TSizes.spaceBtwSections,
                       ),
-                      child: Text(widget.product.descriptions),
+                      child: Text(
+                        widget.product.descriptions,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(height: 1.5),
+                      ),
                     ),
 
                     Row(
@@ -238,6 +296,40 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           ],
                         ),
                       ],
+                    ),
+
+                    const SizedBox(height: TSizes.spaceBtwSections),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(defaultPadding),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Product details',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 12),
+                          _buildInfoRow('Category', widget.product.category,
+                              Icons.category_outlined),
+                          _buildInfoRow(
+                            'Availability',
+                            widget.product.quantity > 0
+                                ? '${widget.product.quantity} in stock'
+                                : 'Out of stock',
+                            Icons.check_circle_outline,
+                          ),
+                          _buildInfoRow(
+                            'Shipping',
+                            r'Free standard shipping on orders over $50',
+                            Icons.local_shipping_outlined,
+                          ),
+                        ],
+                      ),
                     ),
 
                     const SizedBox(height: TSizes.spaceBtwSections),
