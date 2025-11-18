@@ -6,6 +6,7 @@ import 'package:shop/constants.dart';
 import 'package:shop/features/admin/features/models/product_model.dart';
 import 'package:shop/features/auth/controller/auth/auth_provider.dart';
 import 'package:shop/features/controllers/cart_controller/cart.dart';
+import 'package:shop/features/controllers/products/products_controller.dart';
 import 'package:shop/utils/appbar/custom_appbar.dart';
 import 'package:shop/utils/curv_widgets/curv_widget.dart';
 import 'package:shop/utils/favourite_icon/favourite_icon.dart';
@@ -17,6 +18,7 @@ import 'package:shop/utils/theme/colors.dart';
 import 'package:shop/utils/theme/helper.dart';
 
 import 'components/color_dot.dart';
+import 'package:shop/features/screens/home/components/product_card.dart';
 
 class DetailsScreen extends StatefulWidget {
   final ProductModel product;
@@ -29,27 +31,6 @@ class DetailsScreen extends StatefulWidget {
 class _DetailsScreenState extends State<DetailsScreen> {
   late final ValueNotifier<int> _selectedImageNotifier;
   late final ValueNotifier<int> _selectedColorNotifier;
-  final List<_DetailsNotification> _notificationHighlights = const [
-    _DetailsNotification(
-      title: 'Delivery update',
-      description: 'Standard shipping arrives in 3-5 business days.',
-      icon: Icons.local_shipping_outlined,
-      color: Color(0xFF2563EB),
-    ),
-    _DetailsNotification(
-      title: 'Low stock alert',
-      description: 'Only a few pieces left — order soon to reserve yours.',
-      icon: Icons.inventory_2_outlined,
-      color: Color(0xFFF97316),
-    ),
-    _DetailsNotification(
-      title: 'Easy returns',
-      description: 'Free 30-day returns and doorstep pickup available.',
-      icon: Icons.repeat,
-      color: Color(0xFF059669),
-    ),
-  ];
-
   // Define available colors
   final List<Color> availableColors = const [
     Color(0xFFBEE8EA),
@@ -62,6 +43,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
     _selectedImageNotifier = ValueNotifier(0);
     final defaultColorIndex = availableColors.length > 1 ? 1 : 0;
     _selectedColorNotifier = ValueNotifier(defaultColorIndex);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadSimilarProducts();
+    });
   }
 
   @override
@@ -73,6 +57,14 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   bool _isNetworkImage(String imagePath) {
     return imagePath.startsWith('http');
+  }
+
+  void _loadSimilarProducts() {
+    final category = widget.product.category;
+    if (category.isEmpty) return;
+    final controller =
+        Provider.of<ProductsController>(context, listen: false);
+    controller.getCategoriesProducts(context, category);
   }
 
   Widget _buildPrimaryImage(BuildContext context, String image) {
@@ -137,7 +129,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = THelperFunctions.isDarkMode(context);
-    final theme = Theme.of(context);
     final overlayStyle = SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
@@ -371,7 +362,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             ],
                           ),
                           const SizedBox(height: TSizes.spaceBtwSections),
-                          _buildNotificationSection(theme),
+                          _buildSimilarProductsSection(context),
                           const SizedBox(height: TSizes.spaceBtwSections),
                           Container(
                             width: double.infinity,
@@ -485,74 +476,97 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 
-  Widget _buildNotificationSection(ThemeData theme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Notifications',
-          style: theme.textTheme.titleMedium,
-        ),
-        const SizedBox(height: 12),
-        ..._notificationHighlights.map(
-          (item) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: item.color.withOpacity(.08),
-                borderRadius: BorderRadius.circular(18),
+  Widget _buildSimilarProductsSection(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Consumer<ProductsController>(
+      builder: (context, controller, child) {
+        final normalizedCategory = widget.product.category.toLowerCase();
+        final similarProducts = controller.productList.where((product) {
+          final matchesCategory = normalizedCategory.isEmpty
+              ? true
+              : product.category.toLowerCase() == normalizedCategory;
+          final isSameProduct = product.id == widget.product.id;
+          return matchesCategory && !isSameProduct;
+        }).toList();
+
+        if (controller.isLoading) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Similar products', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 230,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 4,
+                  separatorBuilder: (_, __) => const SizedBox(width: 16),
+                  itemBuilder: (context, index) => ProductCard(
+                    image: '',
+                    title: '',
+                    price: 0,
+                    bgColor: Colors.grey.shade200,
+                    press: () {},
+                    isLoading: true,
+                  ),
+                ),
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: item.color.withOpacity(.18),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Icon(item.icon, color: item.color),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.title,
-                          style: theme.textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+            ],
+          );
+        }
+
+        if (similarProducts.isEmpty) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Similar products', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 12),
+              Text(
+                'No similar products available right now. Check back soon!',
+                style: theme.textTheme.bodyMedium,
+              ),
+            ],
+          );
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Similar products', style: theme.textTheme.titleMedium),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 230,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: similarProducts.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 16),
+                itemBuilder: (context, index) {
+                  final product = similarProducts[index];
+                  final image =
+                      product.images.isNotEmpty ? product.images.first : '';
+                  final isNetworkImage = image.startsWith('http');
+
+                  return ProductCard(
+                    image: image,
+                    title: product.name,
+                    price: product.price,
+                    bgColor: Colors.grey.shade100,
+                    isNetwork: isNetworkImage,
+                    press: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => DetailsScreen(product: product),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          item.description,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                      );
+                    },
+                  );
+                },
               ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
-}
-
-class _DetailsNotification {
-  final String title;
-  final String description;
-  final IconData icon;
-  final Color color;
-
-  const _DetailsNotification({
-    required this.title,
-    required this.description,
-    required this.icon,
-    required this.color,
-  });
 }
