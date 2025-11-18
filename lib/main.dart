@@ -32,6 +32,7 @@ import 'package:shop/features/screens/personalization/controllers/address_contro
 import 'package:shop/splash_screen.dart';
 import 'package:shop/utils/devices/devices_utils.dart';
 import 'package:shop/utils/theme/theme.dart';
+import 'package:shop/utils/theme/theme_provider.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() async {
@@ -106,15 +107,20 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => AnalyticsController()),
         ChangeNotifierProvider(create: (_) => AdminCustomerController()),
         ChangeNotifierProvider(create: (_) => FavoriteController()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
-      child: GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'B&W',
-        themeMode: ThemeMode.system,
-        theme: TAppTheme.lightTheme,
-        darkTheme: TAppTheme.darkTheme,
-        home: const AuthWrapper(),
-        builder: EasyLoading.init(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'B&W',
+            themeMode: themeProvider.themeMode,
+            theme: TAppTheme.lightTheme,
+            darkTheme: TAppTheme.darkTheme,
+            home: const AuthWrapper(),
+            builder: EasyLoading.init(),
+          );
+        },
       ),
     );
   }
