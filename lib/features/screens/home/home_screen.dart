@@ -185,7 +185,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     void openCart() {
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const CartScreen()),
+        MaterialPageRoute(
+          builder: (_) => const CartScreen(showBackButton: true),
+        ),
       );
     }
 
