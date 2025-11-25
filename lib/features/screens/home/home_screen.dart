@@ -437,50 +437,57 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: defaultPadding, vertical: 8),
-                            child: GridView.count(
-                              crossAxisCount: 2,
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                              childAspectRatio: 1.8,
-                              children: [
-                                _DrawerQuickAction(
-                                  icon: Iconsax.receipt,
-                                  title: 'Orders',
-                                  caption: 'See status & invoices',
-                                  color: const Color(0xFFEFF6FF),
-                                  onTap: openOrders,
-                                ),
-                                _DrawerQuickAction(
-                                  icon: Iconsax.shopping_bag,
-                                  title: 'My Bag',
-                                  caption: 'Finish your checkout',
-                                  color: const Color(0xFFFFF4EC),
-                                  onTap: () {
-                                    Navigator.of(context).maybePop();
-                                    openCart();
-                                  },
-                                ),
-                                _DrawerQuickAction(
-                                  icon: Iconsax.notification,
-                                  title: 'Notifications',
-                                  caption: 'Promos & delivery alerts',
-                                  color: const Color(0xFFF3E8FF),
-                                  onTap: () {
-                                    Navigator.of(context).maybePop();
-                                    openNotifications();
-                                  },
-                                  badge: notificationCount,
-                                ),
-                                _DrawerQuickAction(
-                                  icon: Iconsax.headphone,
-                                  title: 'Help center',
-                                  caption: 'Chat with support',
-                                  color: const Color(0xFFF0FDF4),
-                                  onTap: openSupport,
-                                ),
-                              ],
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                final isCompact = constraints.maxWidth < 360;
+                                final childAspectRatio = isCompact ? 1.35 : 1.6;
+
+                                return GridView.count(
+                                  crossAxisCount: 2,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  crossAxisSpacing: 12,
+                                  mainAxisSpacing: 12,
+                                  childAspectRatio: childAspectRatio,
+                                  children: [
+                                    _DrawerQuickAction(
+                                      icon: Iconsax.receipt,
+                                      title: 'Orders',
+                                      caption: 'See status & invoices',
+                                      color: const Color(0xFFEFF6FF),
+                                      onTap: openOrders,
+                                    ),
+                                    _DrawerQuickAction(
+                                      icon: Iconsax.shopping_bag,
+                                      title: 'My Bag',
+                                      caption: 'Finish your checkout',
+                                      color: const Color(0xFFFFF4EC),
+                                      onTap: () {
+                                        Navigator.of(context).maybePop();
+                                        openCart();
+                                      },
+                                    ),
+                                    _DrawerQuickAction(
+                                      icon: Iconsax.notification,
+                                      title: 'Notifications',
+                                      caption: 'Promos & delivery alerts',
+                                      color: const Color(0xFFF3E8FF),
+                                      onTap: () {
+                                        Navigator.of(context).maybePop();
+                                        openNotifications();
+                                      },
+                                      badge: notificationCount,
+                                    ),
+                                    _DrawerQuickAction(
+                                      icon: Iconsax.headphone,
+                                      title: 'Help center',
+                                      caption: 'Chat with support',
+                                      color: const Color(0xFFF0FDF4),
+                                      onTap: openSupport,
+                                    ),
+                                  ],
+                                );
+                              },
                             ),
                           ),
                           const SizedBox(height: defaultPadding / 2),
