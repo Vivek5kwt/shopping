@@ -281,6 +281,13 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
+    void openSupport() {
+      Navigator.of(context).maybePop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Live chat support is coming soon.')),
+      );
+    }
+
     final systemUiStyle = SystemUiOverlayStyle(
       statusBarColor: statusColor,
       statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
@@ -424,120 +431,64 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           const SizedBox(height: defaultPadding),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+                            child: _DrawerSectionTitle('Quick shortcuts'),
+                          ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.of(context).maybePop();
-                                openNotifications();
-                              },
-                              borderRadius: BorderRadius.circular(18),
-                              child: Container(
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(18),
-                                  gradient: const LinearGradient(
-                                    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(.08),
-                                      blurRadius: 20,
-                                      offset: const Offset(0, 10),
-                                    ),
-                                  ],
+                            padding: const EdgeInsets.symmetric(horizontal: defaultPadding, vertical: 8),
+                            child: GridView.count(
+                              crossAxisCount: 2,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12,
+                              childAspectRatio: 2.8,
+                              children: [
+                                _DrawerQuickAction(
+                                  icon: Iconsax.receipt,
+                                  title: 'Orders',
+                                  caption: 'See status & invoices',
+                                  color: const Color(0xFFEFF6FF),
+                                  onTap: openOrders,
                                 ),
-                                child: Row(
-                                  children: [
-                                    Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        Container(
-                                          height: 56,
-                                          width: 56,
-                                          decoration: const BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: const Icon(
-                                            Iconsax.notification,
-                                            color: Color(0xFF4338CA),
-                                          ),
-                                        ),
-                                        if (notificationCount > 0)
-                                          Positioned(
-                                            right: -4,
-                                            top: -4,
-                                            child: Container(
-                                              padding: const EdgeInsets.all(6),
-                                              decoration: BoxDecoration(
-                                                color: Colors.red.shade600,
-                                                shape: BoxShape.circle,
-                                                border: Border.all(color: Colors.white, width: 2),
-                                              ),
-                                              child: Text(
-                                                '$notificationCount',
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 11,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                    const SizedBox(width: 14),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: const [
-                                          Text(
-                                            'Notification Center',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                          SizedBox(height: 6),
-                                          Text(
-                                            'See updates, promos, and delivery alerts',
-                                            style: TextStyle(color: Colors.white70),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(.18),
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(color: Colors.white24),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: const [
-                                          Text(
-                                            'Open',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                          SizedBox(width: 6),
-                                          Icon(Iconsax.arrow_right_3, color: Colors.white, size: 18),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                _DrawerQuickAction(
+                                  icon: Iconsax.shopping_bag,
+                                  title: 'My Bag',
+                                  caption: 'Finish your checkout',
+                                  color: const Color(0xFFFFF4EC),
+                                  onTap: () {
+                                    Navigator.of(context).maybePop();
+                                    openCart();
+                                  },
                                 ),
-                              ),
+                                _DrawerQuickAction(
+                                  icon: Iconsax.notification,
+                                  title: 'Notifications',
+                                  caption: 'Promos & delivery alerts',
+                                  color: const Color(0xFFF3E8FF),
+                                  onTap: () {
+                                    Navigator.of(context).maybePop();
+                                    openNotifications();
+                                  },
+                                  badge: notificationCount,
+                                ),
+                                _DrawerQuickAction(
+                                  icon: Iconsax.headphone,
+                                  title: 'Help center',
+                                  caption: 'Chat with support',
+                                  color: const Color(0xFFF0FDF4),
+                                  onTap: openSupport,
+                                ),
+                              ],
                             ),
                           ),
-                          const SizedBox(height: defaultPadding),
+                          const SizedBox(height: defaultPadding / 2),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+                            child: _DrawerSectionTitle('Explore & manage'),
+                          ),
+                          const SizedBox(height: 8),
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -583,6 +534,43 @@ class _HomeScreenState extends State<HomeScreen> {
                                   },
                                 ),
                               ],
+                            ),
+                          ),
+                          const SizedBox(height: defaultPadding),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+                            child: Card(
+                              elevation: 0,
+                              color: const Color(0xFF0F172A),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                              child: ListTile(
+                                onTap: openSupport,
+                                leading: Container(
+                                  height: 44,
+                                  width: 44,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(.08),
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: const Icon(Iconsax.message_question, color: Colors.white),
+                                ),
+                                title: const Text(
+                                  'Need help?',
+                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                                ),
+                                subtitle: const Text(
+                                  'We are online 24/7 for your questions',
+                                  style: TextStyle(color: Colors.white70),
+                                ),
+                                trailing: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(.12),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(Iconsax.arrow_right_3, color: Colors.white),
+                                ),
+                              ),
                             ),
                           ),
                           const SizedBox(height: defaultPadding * 2),
@@ -964,6 +952,119 @@ class _DrawerTile extends StatelessWidget {
           ),
           subtitle: subtitle != null ? Text(subtitle!) : null,
           trailing: const Icon(Iconsax.arrow_right_3),
+        ),
+      ),
+    );
+  }
+}
+
+class _DrawerSectionTitle extends StatelessWidget {
+  const _DrawerSectionTitle(this.title);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 13,
+        color: Colors.black54,
+        letterSpacing: .2,
+        fontWeight: FontWeight.w700,
+      ),
+    );
+  }
+}
+
+class _DrawerQuickAction extends StatelessWidget {
+  const _DrawerQuickAction({
+    required this.icon,
+    required this.title,
+    required this.caption,
+    required this.color,
+    required this.onTap,
+    this.badge,
+  });
+
+  final IconData icon;
+  final String title;
+  final String caption;
+  final Color color;
+  final VoidCallback onTap;
+  final int? badge;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: color,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    height: 44,
+                    width: 44,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(icon, color: Colors.black87),
+                  ),
+                  if ((badge ?? 0) > 0)
+                    Positioned(
+                      right: -6,
+                      top: -6,
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.red.shade600,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: Text(
+                          '$badge',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      caption,
+                      style: const TextStyle(color: Colors.black54, fontSize: 12),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
