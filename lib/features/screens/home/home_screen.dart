@@ -326,7 +326,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           ),
                           const SizedBox(height: defaultPadding),
-                          Row(
+                          Wrap(
+                            spacing: 12,
+                            runSpacing: 12,
+                            crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
                               Container(
                                 padding: const EdgeInsets.symmetric(
@@ -347,7 +350,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ],
                                 ),
                               ),
-                              const Spacer(),
                               TextButton.icon(
                                 style: TextButton.styleFrom(
                                   foregroundColor: Colors.white,
@@ -409,101 +411,76 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           const SizedBox(height: defaultPadding),
-                          const Text(
-                            'Quick actions',
-                            style: TextStyle(
-                              fontSize: 14,
-                              letterSpacing: 0.3,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black54,
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(18),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(.03),
+                                  blurRadius: 16,
+                                  offset: const Offset(0, 8),
+                                )
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                _DrawerTile(
+                                  icon: Iconsax.user,
+                                  title: 'Profile & preferences',
+                                  subtitle: 'Update your info and settings',
+                                  onTap: () {
+                                    Navigator.of(context).maybePop();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Profile coming soon!')),
+                                    );
+                                  },
+                                ),
+                                _DrawerTile(
+                                  icon: Icons.receipt_long,
+                                  title: 'My Orders',
+                                  subtitle: 'Track and manage purchases',
+                                  onTap: () {
+                                    Navigator.of(context).maybePop();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Orders coming soon!')),
+                                    );
+                                  },
+                                ),
+                                _DrawerTile(
+                                  icon: Iconsax.shopping_bag,
+                                  title: 'My Bag',
+                                  subtitle: 'Checkout when you are ready',
+                                  onTap: () {
+                                    Navigator.of(context).maybePop();
+                                    openCart();
+                                  },
+                                ),
+                                _DrawerTile(
+                                  icon: Iconsax.location,
+                                  title: 'Saved addresses',
+                                  subtitle: 'Keep deliveries on point',
+                                  onTap: () {
+                                    Navigator.of(context).maybePop();
+                                    openAddresses();
+                                  },
+                                ),
+                                _DrawerTile(
+                                  icon: Iconsax.notification,
+                                  title: 'Notifications',
+                                  subtitle: 'Stay in the loop with alerts',
+                                  onTap: () {
+                                    Navigator.of(context).maybePop();
+                                    openNotifications();
+                                  },
+                                ),
+                              ],
                             ),
                           ),
-                          const SizedBox(height: 12),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: [
-                              _QuickActionChip(
-                                icon: Iconsax.shopping_bag,
-                                label: 'My Bag',
-                                onTap: () {
-                                  Navigator.of(context).maybePop();
-                                  openCart();
-                                },
-                              ),
-                              _QuickActionChip(
-                                icon: Iconsax.location,
-                                label: 'Addresses',
-                                onTap: () {
-                                  Navigator.of(context).maybePop();
-                                  openAddresses();
-                                },
-                              ),
-                              _QuickActionChip(
-                                icon: Iconsax.notification,
-                                label: 'Notifications',
-                                badgeCount: notificationCount,
-                                onTap: () {
-                                  Navigator.of(context).maybePop();
-                                  openNotifications();
-                                },
-                              ),
-                              _QuickActionChip(
-                                icon: Iconsax.clock,
-                                label: 'Recent view',
-                                onTap: () {
-                                  Navigator.of(context).maybePop();
-                                  Future.microtask(() => _scrollToKey(_recentKey));
-                                },
-                              ),
-                            ],
-                          ),
+                          const SizedBox(height: defaultPadding * 2),
                         ],
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: defaultPadding),
-                      child: Text(
-                        'Browse',
-                        style: TextStyle(
-                          fontSize: 14,
-                          letterSpacing: 0.3,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black54,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    _DrawerTile(
-                      icon: Icons.history,
-                      title: 'Recent View',
-                      subtitle: 'Jump back into what you explored',
-                      onTap: () {
-                        Navigator.of(context).maybePop();
-                        Future.microtask(() => _scrollToKey(_recentKey));
-                      },
-                    ),
-                    _DrawerTile(
-                      icon: Icons.trending_up,
-                      title: 'Trending (T-shirts)',
-                      subtitle: 'Fresh looks curated for you',
-                      onTap: () {
-                        Navigator.of(context).maybePop();
-                        Future.microtask(() => _scrollToKey(_trendingKey));
-                      },
-                    ),
-                    _DrawerTile(
-                      icon: Icons.receipt_long,
-                      title: 'My Orders',
-                      subtitle: 'Track & manage recent purchases',
-                      onTap: () {
-                        Navigator.of(context).maybePop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Orders coming soon!')),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: defaultPadding * 2),
                   ],
                 );
               },
@@ -879,68 +856,6 @@ class _DrawerTile extends StatelessWidget {
           ),
           subtitle: subtitle != null ? Text(subtitle!) : null,
           trailing: const Icon(Iconsax.arrow_right_3),
-        ),
-      ),
-    );
-  }
-}
-
-class _QuickActionChip extends StatelessWidget {
-  const _QuickActionChip({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    this.badgeCount,
-  });
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-  final int? badgeCount;
-
-  @override
-  Widget build(BuildContext context) {
-    final bool showBadge = (badgeCount ?? 0) > 0;
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(30),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(30),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(.03),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              )
-            ],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 18, color: const Color(0xFF0F172A)),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: const TextStyle(fontWeight: FontWeight.w500),
-              ),
-              if (showBadge) ...[
-                const SizedBox(width: 6),
-                CircleAvatar(
-                  radius: 10,
-                  backgroundColor: Colors.red,
-                  child: Text(
-                    '$badgeCount',
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                ),
-              ]
-            ],
-          ),
         ),
       ),
     );
