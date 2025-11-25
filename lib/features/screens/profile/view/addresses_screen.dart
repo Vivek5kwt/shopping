@@ -1,28 +1,215 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shop/features/screens/personalization/view/add_new_address.dart';
 import 'package:shop/utils/localization/app_localizations.dart';
 import 'package:shop/utils/responsive/responsive.dart';
 
-class AddressesScreen extends StatelessWidget {
+class AddressesScreen extends StatefulWidget {
   const AddressesScreen({super.key});
 
-  final List<_AddressItem> _addresses = const [
-    const _AddressItem(
-      title: 'Home',
-      subtitle: '221B Baker Street, London, UK',
-      phone: '+44 1234 567 890',
-      isDefault: true,
-      tagColor: const Color(0xFF3B82F6),
-    ),
-    const _AddressItem(
-      title: 'Work',
-      subtitle: '17 Hudson Yards, New York, NY',
-      phone: '+1 212-555-9876',
-      isDefault: false,
-      tagColor: const Color(0xFF10B981),
-    ),
-  ];
+  @override
+  State<AddressesScreen> createState() => _AddressesScreenState();
+}
+
+class _AddressesScreenState extends State<AddressesScreen> {
+  late List<_AddressItem> _addresses;
+  int _addressCounter = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _addresses = [
+      _AddressItem(
+        id: 'home',
+        title: 'Home',
+        subtitle: '221B Baker Street, London, UK',
+        phone: '+44 1234 567 890',
+        isDefault: true,
+        tagColor: const Color(0xFF3B82F6),
+      ),
+      _AddressItem(
+        id: 'work',
+        title: 'Work',
+        subtitle: '17 Hudson Yards, New York, NY',
+        phone: '+1 212-555-9876',
+        isDefault: false,
+        tagColor: const Color(0xFF10B981),
+      ),
+    ];
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  void _setDefaultAddress(String id) {
+    setState(() {
+      _addresses = _addresses
+          .map((address) => address.copyWith(isDefault: address.id == id))
+          .toList();
+    });
+    final addressTitle =
+        _addresses.firstWhere((element) => element.id == id).title;
+    _showSnackBar('$addressTitle set as default');
+  }
+
+  Future<void> _confirmDeleteAddress(_AddressItem address) async {
+    final shouldDelete = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Remove address'),
+            content: Text('Delete ${address.title}?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Remove'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+
+    if (!shouldDelete) return;
+
+    setState(() {
+      _addresses.removeWhere((item) => item.id == address.id);
+      if (_addresses.isNotEmpty && !_addresses.any((a) => a.isDefault)) {
+        _addresses[0] = _addresses[0].copyWith(isDefault: true);
+      }
+    });
+
+    _showSnackBar('Address removed');
+  }
+
+  Future<void> _openAddressForm({_AddressItem? address}) async {
+    final responsive = context.responsive;
+    final loc = context.loc;
+
+    final titleController = TextEditingController(text: address?.title ?? '');
+    final subtitleController =
+        TextEditingController(text: address?.subtitle ?? '');
+    final phoneController = TextEditingController(text: address?.phone ?? '');
+    bool isDefault = address?.isDefault ?? false;
+
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom +
+                responsive.spacing(20),
+            left: responsive.spacing(20),
+            right: responsive.spacing(20),
+            top: responsive.spacing(24),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  address == null ? loc.addAddressCta : 'Edit address',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ),
+              SizedBox(height: responsive.spacing(16)),
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(labelText: 'Label (Home, Work)'),
+              ),
+              SizedBox(height: responsive.spacing(12)),
+              TextField(
+                controller: subtitleController,
+                decoration: const InputDecoration(labelText: 'Full address'),
+              ),
+              SizedBox(height: responsive.spacing(12)),
+              TextField(
+                controller: phoneController,
+                decoration: const InputDecoration(labelText: 'Phone number'),
+                keyboardType: TextInputType.phone,
+              ),
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                value: isDefault,
+                onChanged: (value) {
+                  setState(() {
+                    isDefault = value ?? false;
+                  });
+                },
+                title: const Text('Set as default'),
+              ),
+              SizedBox(height: responsive.spacing(12)),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (titleController.text.isEmpty ||
+                        subtitleController.text.isEmpty ||
+                        phoneController.text.isEmpty) {
+                      _showSnackBar('Please complete all address details.');
+                      return;
+                    }
+
+                    Navigator.of(context).pop(true);
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: responsive.spacing(12),
+                    ),
+                    child: Text(address == null ? loc.addAddressCta : 'Save changes'),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (result != true) return;
+
+    setState(() {
+      if (isDefault) {
+        _addresses =
+            _addresses.map((a) => a.copyWith(isDefault: false)).toList();
+      }
+
+      final newAddress = _AddressItem(
+        id: address?.id ?? 'addr_${_addressCounter++}',
+        title: titleController.text,
+        subtitle: subtitleController.text,
+        phone: phoneController.text,
+        isDefault: isDefault || (_addresses.isEmpty && address == null),
+        tagColor: address?.tagColor ?? const Color(0xFF3B82F6),
+      );
+
+      if (address == null) {
+        _addresses.add(newAddress);
+        _showSnackBar('Address added');
+      } else {
+        final index = _addresses.indexWhere((a) => a.id == address.id);
+        if (index != -1) {
+          _addresses[index] = newAddress;
+          _showSnackBar('Address updated');
+        }
+      }
+    });
+  }
+
+  void _copyAddress(_AddressItem address) {
+    Clipboard.setData(ClipboardData(text: address.subtitle));
+    _showSnackBar('Address copied to clipboard');
+  }
+
+  void _openNavigation(_AddressItem address) {
+    _showSnackBar('Navigation to ${address.title} is coming soon.');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +254,21 @@ class AddressesScreen extends StatelessWidget {
           children: [
             _AddressHero(responsive: responsive),
             SizedBox(height: responsive.spacing(18)),
-            _QuickActions(responsive: responsive),
+            _QuickActions(
+              responsive: responsive,
+              onSetDefault: () {
+                if (_addresses.isNotEmpty) {
+                  _setDefaultAddress(_addresses.first.id);
+                }
+              },
+              onShare: () {
+                if (_addresses.isNotEmpty) {
+                  _copyAddress(_addresses.first);
+                }
+              },
+              onViewHistory: () =>
+                  _showSnackBar('Recent deliveries will appear here soon.'),
+            ),
             SizedBox(height: responsive.spacing(20)),
             _HeaderMessage(
               title: loc.addresses,
@@ -77,18 +278,28 @@ class AddressesScreen extends StatelessWidget {
             ..._addresses.map(
               (address) => Padding(
                 padding: EdgeInsets.only(bottom: responsive.spacing(16)),
-                child: _AddressCard(address: address),
+                child: _AddressCard(
+                  address: address,
+                  onDirections: () => _openNavigation(address),
+                  onShare: () => _copyAddress(address),
+                  onEdit: () => _openAddressForm(address: address),
+                  onDelete: () => _confirmDeleteAddress(address),
+                  onMakeDefault:
+                      address.isDefault ? null : () => _setDefaultAddress(address.id),
+                ),
               ),
             ),
+            if (_addresses.isEmpty)
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: responsive.spacing(12)),
+                child: Text(
+                  'No addresses yet. Add one to keep deliveries on track.',
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ),
             SizedBox(height: responsive.spacing(12)),
             ElevatedButton.icon(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const AddNewAddress(),
-                  ),
-                );
-              },
+              onPressed: () => _openAddressForm(),
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: responsive.spacing(14)),
                 textStyle: theme.textTheme.titleMedium,
@@ -104,9 +315,21 @@ class AddressesScreen extends StatelessWidget {
 }
 
 class _AddressCard extends StatelessWidget {
-  const _AddressCard({required this.address});
+  const _AddressCard({
+    required this.address,
+    required this.onDirections,
+    required this.onShare,
+    required this.onEdit,
+    required this.onDelete,
+    this.onMakeDefault,
+  });
 
   final _AddressItem address;
+  final VoidCallback onDirections;
+  final VoidCallback onShare;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+  final VoidCallback? onMakeDefault;
 
   @override
   Widget build(BuildContext context) {
@@ -189,13 +412,13 @@ class _AddressCard extends StatelessWidget {
               _ActionChip(
                 icon: Icons.navigation_outlined,
                 label: 'Directions',
-                onTap: () {},
+                onTap: onDirections,
                 responsive: responsive,
               ),
               _ActionChip(
                 icon: Icons.share_location_outlined,
                 label: 'Share',
-                onTap: () {},
+                onTap: onShare,
                 responsive: responsive,
               ),
             ],
@@ -205,7 +428,7 @@ class _AddressCard extends StatelessWidget {
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () {},
+                  onPressed: onEdit,
                   icon: const Icon(Icons.edit_outlined),
                   label: Text(loc.editProfile),
                 ),
@@ -213,13 +436,23 @@ class _AddressCard extends StatelessWidget {
               SizedBox(width: responsive.spacing(12)),
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () {},
+                  onPressed: onDelete,
                   icon: const Icon(Icons.delete_outline),
                   label: Text(loc.removeAction),
                 ),
               ),
             ],
           ),
+          if (onMakeDefault != null) ...[
+            SizedBox(height: responsive.spacing(12)),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: onMakeDefault,
+                child: const Text('Set as default'),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -355,6 +588,7 @@ class _ActionChip extends StatelessWidget {
 
 class _AddressItem {
   const _AddressItem({
+    required this.id,
     required this.title,
     required this.subtitle,
     required this.phone,
@@ -362,11 +596,30 @@ class _AddressItem {
     required this.tagColor,
   });
 
+  final String id;
   final String title;
   final String subtitle;
   final String phone;
   final bool isDefault;
   final Color tagColor;
+
+  _AddressItem copyWith({
+    String? id,
+    String? title,
+    String? subtitle,
+    String? phone,
+    bool? isDefault,
+    Color? tagColor,
+  }) {
+    return _AddressItem(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      subtitle: subtitle ?? this.subtitle,
+      phone: phone ?? this.phone,
+      isDefault: isDefault ?? this.isDefault,
+      tagColor: tagColor ?? this.tagColor,
+    );
+  }
 }
 
 class _HeaderMessage extends StatelessWidget {
@@ -480,9 +733,17 @@ class _AddressHero extends StatelessWidget {
 }
 
 class _QuickActions extends StatelessWidget {
-  const _QuickActions({required this.responsive});
+  const _QuickActions({
+    required this.responsive,
+    required this.onSetDefault,
+    required this.onShare,
+    required this.onViewHistory,
+  });
 
   final ResponsiveUtils responsive;
+  final VoidCallback onSetDefault;
+  final VoidCallback onShare;
+  final VoidCallback onViewHistory;
 
   @override
   Widget build(BuildContext context) {
@@ -497,18 +758,21 @@ class _QuickActions extends StatelessWidget {
             title: 'Default location',
             subtitle: 'Set preferred delivery spot',
             color: theme.colorScheme.primary,
+            onTap: onSetDefault,
           ),
           _QuickActionData(
             icon: Icons.qr_code_scanner,
             title: 'Share code',
             subtitle: 'Send details to courier',
             color: theme.colorScheme.secondary,
+            onTap: onShare,
           ),
           _QuickActionData(
             icon: Icons.history_rounded,
             title: 'Recent drops',
             subtitle: 'View last deliveries',
             color: theme.colorScheme.tertiary,
+            onTap: onViewHistory,
           ),
         ];
 
@@ -524,6 +788,7 @@ class _QuickActions extends StatelessWidget {
                   child: _QuickActionCard(
                     action: action,
                     responsive: responsive,
+                    onTap: action.onTap,
                   ),
                 ),
               )
@@ -538,60 +803,71 @@ class _QuickActionCard extends StatelessWidget {
   const _QuickActionCard({
     required this.action,
     required this.responsive,
+    required this.onTap,
   });
 
   final _QuickActionData action;
   final ResponsiveUtils responsive;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
-      padding: responsive.padding(all: 16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
         borderRadius: BorderRadius.circular(responsive.borderRadius(22)),
-        border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.08),
+        onTap: onTap,
+        child: Container(
+          padding: responsive.padding(all: 16),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(responsive.borderRadius(22)),
+            border: Border.all(
+              color: theme.colorScheme.outline.withOpacity(0.08),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: responsive.padding(all: 10),
+                decoration: BoxDecoration(
+                  color: action.color.withOpacity(0.15),
+                  borderRadius:
+                      BorderRadius.circular(responsive.borderRadius(16)),
+                ),
+                child: Icon(
+                  action.icon,
+                  color: action.color,
+                  size: responsive.iconSize(20),
+                ),
+              ),
+              SizedBox(width: responsive.spacing(12)),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      action.title,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: responsive.spacing(4)),
+                    Text(
+                      action.subtitle,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color:
+                            theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: responsive.padding(all: 10),
-            decoration: BoxDecoration(
-              color: action.color.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(responsive.borderRadius(16)),
-            ),
-            child: Icon(
-              action.icon,
-              color: action.color,
-              size: responsive.iconSize(20),
-            ),
-          ),
-          SizedBox(width: responsive.spacing(12)),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  action.title,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: responsive.spacing(4)),
-                Text(
-                  action.subtitle,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -603,10 +879,12 @@ class _QuickActionData {
     required this.title,
     required this.subtitle,
     required this.color,
+    required this.onTap,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
   final Color color;
+  final VoidCallback onTap;
 }
