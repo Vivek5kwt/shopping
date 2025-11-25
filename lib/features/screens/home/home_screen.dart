@@ -424,6 +424,120 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           const SizedBox(height: defaultPadding),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).maybePop();
+                                openNotifications();
+                              },
+                              borderRadius: BorderRadius.circular(18),
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18),
+                                  gradient: const LinearGradient(
+                                    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(.08),
+                                      blurRadius: 20,
+                                      offset: const Offset(0, 10),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  children: [
+                                    Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        Container(
+                                          height: 56,
+                                          width: 56,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Iconsax.notification,
+                                            color: Color(0xFF4338CA),
+                                          ),
+                                        ),
+                                        if (notificationCount > 0)
+                                          Positioned(
+                                            right: -4,
+                                            top: -4,
+                                            child: Container(
+                                              padding: const EdgeInsets.all(6),
+                                              decoration: BoxDecoration(
+                                                color: Colors.red.shade600,
+                                                shape: BoxShape.circle,
+                                                border: Border.all(color: Colors.white, width: 2),
+                                              ),
+                                              child: Text(
+                                                '$notificationCount',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                    const SizedBox(width: 14),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: const [
+                                          Text(
+                                            'Notification Center',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          SizedBox(height: 6),
+                                          Text(
+                                            'See updates, promos, and delivery alerts',
+                                            style: TextStyle(color: Colors.white70),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(.18),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(color: Colors.white24),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: const [
+                                          Text(
+                                            'Open',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          SizedBox(width: 6),
+                                          Icon(Iconsax.arrow_right_3, color: Colors.white, size: 18),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: defaultPadding),
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -466,15 +580,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   onTap: () {
                                     Navigator.of(context).maybePop();
                                     openAddresses();
-                                  },
-                                ),
-                                _DrawerTile(
-                                  icon: Iconsax.notification,
-                                  title: 'Notifications',
-                                  subtitle: 'Stay in the loop with alerts',
-                                  onTap: () {
-                                    Navigator.of(context).maybePop();
-                                    openNotifications();
                                   },
                                 ),
                               ],
