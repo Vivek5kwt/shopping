@@ -18,7 +18,9 @@ import 'package:shop/utils/shimmer/shimmer_effect.dart';
 import 'package:shop/utils/theme/theme_provider.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({super.key, this.showBackButton = false});
+
+  final bool showBackButton;
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -90,11 +92,23 @@ class _ProfilePageState extends State<ProfilePage> {
                   slivers: [
               // App Bar with Profile Header
               SliverAppBar(
-                automaticallyImplyLeading: false,
+                automaticallyImplyLeading: widget.showBackButton,
                 expandedHeight: responsive.heightPercent(40),
                 pinned: true,
                 backgroundColor: const Color(0xFF3B82F6),
                 elevation: 0,
+                leading: widget.showBackButton
+                    ? Padding(
+                        padding: EdgeInsets.only(
+                          left: responsive.spacing(8),
+                          top: responsive.spacing(4),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                          onPressed: () => Navigator.of(context).maybePop(),
+                        ),
+                      )
+                    : null,
                 flexibleSpace: FlexibleSpaceBar(
                   background: Container(
                     decoration: const BoxDecoration(

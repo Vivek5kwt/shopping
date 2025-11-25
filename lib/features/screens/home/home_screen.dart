@@ -254,7 +254,9 @@ class _HomeScreenState extends State<HomeScreen> {
     void openProfile() {
       Navigator.of(context).maybePop();
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const ProfilePage()),
+        MaterialPageRoute(
+          builder: (_) => const ProfilePage(showBackButton: true),
+        ),
       );
     }
 
