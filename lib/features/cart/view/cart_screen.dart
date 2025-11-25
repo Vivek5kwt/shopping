@@ -24,7 +24,6 @@ class CartScreen extends StatelessWidget {
       child: Consumer<AuthProvider>(
         builder: (context, controller, child) {
           final navigator = Navigator.of(context);
-          final canPop = navigator.canPop();
           final emptyWidget = TAnimationLoaderWidget(
             text: "Whoops! cart is empty",
             animation: TImages.cartAnimation,
@@ -56,19 +55,109 @@ class CartScreen extends StatelessWidget {
           print("sum: $sum");
           print("cart items length: ${cartItems.length}");
       
-          final body = cartItems.isEmpty
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(TSizes.defaultSpace),
-                    child: emptyWidget,
+          final body = AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: cartItems.isEmpty
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(TSizes.defaultSpace),
+                      child: emptyWidget,
+                    ),
+                  )
+                : Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.blue.withOpacity(0.05),
+                          Colors.purple.withOpacity(0.04),
+                        ],
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            TSizes.defaultSpace,
+                            TSizes.defaultSpace,
+                            TSizes.defaultSpace,
+                            0,
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondaryContainer,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(
+                                  Icons.shopping_cart_checkout,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSecondaryContainer,
+                                ),
+                              ),
+                              const SizedBox(width: TSizes.spaceBtwItems),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Review your cart",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "Make sure everything looks perfect before you checkout.",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.color
+                                                ?.withOpacity(0.7),
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: TSizes.spaceBtwSections / 2),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.only(
+                              left: TSizes.defaultSpace,
+                              right: TSizes.defaultSpace,
+                              bottom: TSizes.defaultSpace,
+                            ),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 2,
+                              child: Padding(
+                                padding: const EdgeInsets.all(TSizes.md),
+                                child: CartItem(isDark: isDark),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                )
-              : SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(TSizes.defaultSpace),
-                    child: CartItem(isDark: isDark),
-                  ),
-                );
+          );
 
           return Scaffold(
             appBar: AppBar(
@@ -87,30 +176,100 @@ class CartScreen extends StatelessWidget {
                 if (cartItems.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(right: 15.0),
-                    child: ElevatedButton(
-                      onPressed: () => Get.to(() => CheckoutScreen()),
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        shape: const StadiumBorder(),
-                      ),
-                      child: Text(
-                        "Checkout \$$sum",
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
+                    child: Chip(
+                      backgroundColor:
+                          Theme.of(context).colorScheme.secondaryContainer,
+                      label: Text(
+                        "Items: ${cartItems.length}",
+                        style: Theme.of(context).textTheme.labelLarge,
                       ),
                     ),
                   ),
               ],
             ),
             body: body,
+            bottomNavigationBar: cartItems.isEmpty
+                ? null
+                : Container(
+                    padding: const EdgeInsets.all(TSizes.defaultSpace),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, -2),
+                        ),
+                      ],
+                    ),
+                    child: SafeArea(
+                      top: false,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Subtotal",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "Shipping calculated at checkout",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.color
+                                              ?.withOpacity(0.7),
+                                        ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                "\$${sum.toStringAsFixed(2)}",
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: TSizes.spaceBtwItems),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              icon: const Icon(Icons.shopping_bag_outlined),
+                              onPressed: () => Get.to(
+                                () => const CheckoutScreen(),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                  horizontal: TSizes.md,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                              label: Text(
+                                "Proceed to Checkout (\$${sum.toStringAsFixed(2)})",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
           );
         },
       ),

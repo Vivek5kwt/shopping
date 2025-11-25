@@ -30,13 +30,14 @@ class _CartItemState extends State<CartItem> {
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(
       builder: (context, controller, child) {
-        // Safely get cart count
-        final cartList = controller.user?.cart;
+        final cartList = controller.user?.cart ?? [];
+        if (cartList.isEmpty) return const SizedBox.shrink();
         return ListView.separated(
           shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           separatorBuilder: (_, __) =>
               const SizedBox(height: TSizes.spaceBtwSections),
-          itemCount: cartList!.length,
+          itemCount: cartList.length,
           itemBuilder: (context, index) {
             final cartItem = cartList[index];
             final product = ProductModel.fromJson(cartItem['product']);
