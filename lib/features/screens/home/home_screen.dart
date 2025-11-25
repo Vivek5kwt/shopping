@@ -9,7 +9,9 @@ import 'package:shop/features/auth/controller/auth/auth_provider.dart';
 import 'package:shop/features/cart/view/cart_screen.dart';
 import 'package:shop/features/screens/home/notification_screen.dart';
 import 'package:shop/features/screens/profile/view/addresses_screen.dart';
+import 'package:shop/features/screens/orders/view/order_list.dart';
 import 'package:shop/features/screens/details/details_screen.dart';
+import 'package:shop/features/screens/profile/view/profile_screen.dart';
 
 import 'components/categories.dart';
 import 'components/creativity_view.dart';
@@ -249,6 +251,20 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
+    void openProfile() {
+      Navigator.of(context).maybePop();
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const ProfilePage()),
+      );
+    }
+
+    void openOrders() {
+      Navigator.of(context).maybePop();
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const OrderListScreen()),
+      );
+    }
+
     void openCart() {
       Navigator.of(context).push(
         MaterialPageRoute(
@@ -359,12 +375,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     side: BorderSide(color: Colors.white.withOpacity(.4)),
                                   ),
                                 ),
-                                onPressed: () {
-                                  Navigator.of(context).maybePop();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Profile coming soon!')),
-                                  );
-                                },
+                                onPressed: openProfile,
                                 icon: const Icon(Iconsax.user, size: 18),
                                 label: const Text('View profile'),
                               )
@@ -429,23 +440,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   icon: Iconsax.user,
                                   title: 'Profile & preferences',
                                   subtitle: 'Update your info and settings',
-                                  onTap: () {
-                                    Navigator.of(context).maybePop();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Profile coming soon!')),
-                                    );
-                                  },
+                                  onTap: openProfile,
                                 ),
                                 _DrawerTile(
                                   icon: Icons.receipt_long,
                                   title: 'My Orders',
                                   subtitle: 'Track and manage purchases',
-                                  onTap: () {
-                                    Navigator.of(context).maybePop();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Orders coming soon!')),
-                                    );
-                                  },
+                                  onTap: openOrders,
                                 ),
                                 _DrawerTile(
                                   icon: Iconsax.shopping_bag,
