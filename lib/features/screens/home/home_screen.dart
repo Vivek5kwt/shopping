@@ -443,7 +443,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               physics: const NeverScrollableScrollPhysics(),
                               crossAxisSpacing: 12,
                               mainAxisSpacing: 12,
-                              childAspectRatio: 2.2,
+                              childAspectRatio: 1.8,
                               children: [
                                 _DrawerQuickAction(
                                   icon: Iconsax.receipt,
