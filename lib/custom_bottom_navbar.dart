@@ -57,20 +57,11 @@ class _MainWrapperState extends State<MainWrapper> {
       value: overlayStyle,
       child: Scaffold(
         backgroundColor: const Color(0xFFF8F8FF),
-        body: Stack(
-          children: [
-            IndexedStack(
-              index: controller.currentIndex,
-              children: pages,
-            ),
-            const Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: BottomBar(),
-            ),
-          ],
+        body: IndexedStack(
+          index: controller.currentIndex,
+          children: pages,
         ),
+        bottomNavigationBar: const BottomBar(),
       ),
     );
   }
